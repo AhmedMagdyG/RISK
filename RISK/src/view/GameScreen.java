@@ -1,3 +1,4 @@
+package view;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
@@ -20,7 +21,7 @@ public class GameScreen extends JPanel {
 	private Clicks clicksListener;
 	
 	public GameScreen(Controller controller) {
-		this.controller = controller;
+		this.setController(controller);
 
 		setLayout(null);
 		setPreferredSize(new Dimension(1200, 600));
@@ -109,6 +110,14 @@ public class GameScreen extends JPanel {
 				  "fill-color: red; size: 30;" +
 				  "text-color: " + color);
 		node.setAttribute("ui.label", String.valueOf(soldiers));
+	}
+
+	public Controller getController() {
+		return controller;
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 	
 	/*

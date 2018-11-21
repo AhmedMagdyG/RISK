@@ -1,9 +1,10 @@
+package view;
 import java.awt.event.MouseEvent;
 
 import javax.swing.event.MouseInputListener;
 
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
+//import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
