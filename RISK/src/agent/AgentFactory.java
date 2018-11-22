@@ -13,14 +13,14 @@ public class AgentFactory implements IAgentFactory {
 	}
 	
 	@Override
-	public IAgent getAgent(AgentType type) {
+	public IAgent getAgent(AgentType type, boolean player) {
 		switch (type) {
 			case PASSIVE:
-				return new PassiveAgent(type);
+				return new PassiveAgent(type, player);
 			case AGGRESSIVE:
-				return new AggressiveAgent(type);
+				return new AggressiveAgent(type, player);
 			case PACIFIST:
-				return new PacifistAgent(type);
+				return new PacifistAgent(type, player);
 			default:
 				return null;
 		}	

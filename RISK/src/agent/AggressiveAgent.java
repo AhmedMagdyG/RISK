@@ -6,9 +6,11 @@ import graph.INode;
 
 public class AggressiveAgent implements IAgent {
 	private AgentType agentType;
+	private boolean player;
 	
-	public AggressiveAgent(AgentType agentType) {
+	public AggressiveAgent(AgentType agentType, boolean player) {
 		this.agentType = agentType;
+		this.player = player;
 	}
 	
 	@Override
@@ -26,6 +28,11 @@ public class AggressiveAgent implements IAgent {
 	public INode deploy(IGraph graph, int soldiers) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean getPlayer() {
+		return player;
 	}
 
 }

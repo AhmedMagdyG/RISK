@@ -1,5 +1,5 @@
 package agent;
 
 public interface IAgentFactory {
-	IAgent getAgent(AgentType type);
+	IAgent getAgent(AgentType type, boolean player);
 }

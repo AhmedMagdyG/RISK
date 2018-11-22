@@ -10,4 +10,6 @@ public interface IAgent {
 	public Attack attack(IGraph graph);
 	
 	public INode deploy(IGraph graph, int soldiers);
+	
+	public boolean getPlayer();
 }

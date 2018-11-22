@@ -31,8 +31,8 @@ public class Controller implements IController{
 
 	@Override
 	public void initializeGame(AgentType player1Type, AgentType player2Type) {
-		player1 = AgentFactory.getInstance().getAgent(player1Type);
-		player2 = AgentFactory.getInstance().getAgent(player2Type);
+		player1 = AgentFactory.getInstance().getAgent(player1Type, false);
+		player2 = AgentFactory.getInstance().getAgent(player2Type, true);
 		graph = new Graph();
 	}
 	
