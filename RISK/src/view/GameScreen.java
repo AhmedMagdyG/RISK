@@ -1,3 +1,5 @@
+package view;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -14,17 +16,19 @@ import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.*;
 import org.graphstream.ui.view.*;
 
+import controller.IController;
+
 @SuppressWarnings("serial")
 public class GameScreen extends JPanel {
 	
-	private Controller controller;
+	private IController controller;
 	private JLabel log, playerOneLabel, playerTwoLabel;
 	private Graph graph;
 	private JButton playerOneAttack, playerOneSkip;
 	private JButton playerTwoAttack, playerTwoSkip; 
 	private GraphListener clicksListener;
 	
-	public GameScreen(Controller controller) {
+	public GameScreen(IController controller) {
 		this.controller = controller;
 
 		setLayout(null);
@@ -59,10 +63,20 @@ public class GameScreen extends JPanel {
 		
 		playerOneAttack = makeButton("Attack");
 		playerOneAttack.setBounds(960, 80, 80, 80);
+		playerOneAttack.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		});
 		add(playerOneAttack);
 		
 		playerTwoAttack = makeButton("Attack");
 		playerTwoAttack.setBounds(960, 350, 80, 80);
+		playerTwoAttack.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		});
 		add(playerTwoAttack);
 		
 		playerOneSkip = makeButton("Skip");

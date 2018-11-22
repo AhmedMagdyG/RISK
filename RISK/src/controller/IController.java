@@ -1,22 +1,32 @@
 package controller;
 
-import agent.AgentType;
 import agent.IAgent;
+
 
 public interface IController {
 	
+	public void showMainMenu();
+	
 	public boolean checkGameOver();
+			
+	public void startGame();
 	
-	public void initializeGame(AgentType player1AgentType, AgentType player2AgentType);
-	
-	public boolean humanAttack(int fromId, int toId, int soldiers);
-	
-	public void attack();
-		
-	public IAgent getCurAgent();
+	public void skipAttack();
 	
 	public void gamePlay();
 	
-	public void distributeBonus();
+	public boolean humanAttack();
+	
+	public void nonhumanAttack();
+	
+	public void attackHandler();
+		
+	public IAgent getCurAgent();
+	
+	public void nonhumanDistributeBonus();
+	
+	public void humanDistributeBonus();
+	
+	public void distributeBonusHandler();
 	
 }

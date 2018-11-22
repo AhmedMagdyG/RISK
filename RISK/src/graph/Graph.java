@@ -7,6 +7,7 @@ public class Graph implements IGraph{
 	
 	ArrayList<INode> nodes;
 	ArrayList<IContinent> continents;
+	ArrayList<IEdge> edges;
 	
 	public Graph() {
 		// initialize graph
@@ -18,6 +19,10 @@ public class Graph implements IGraph{
 		return nodes;
 	}
 
+	@Override
+	public ArrayList<IEdge> getEdges() {
+		return edges;
+	}
 
 	@Override
 	public ArrayList<IContinent> getContinents() {

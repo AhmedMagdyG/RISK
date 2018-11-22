@@ -1,3 +1,5 @@
+package view;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -13,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import controller.IController;
+
 @SuppressWarnings("serial")
 public class MainMenu extends JPanel {
 	
@@ -21,9 +25,9 @@ public class MainMenu extends JPanel {
 	private String[] playerNames = { "Human", "Passive", "Aggressive", "Nearly Pacifist",
 			"Greedy", "A*", "Real-time A*" };
 	private JPanel body;
-	private Controller controller;
+	private IController controller;
 
-	public MainMenu(final Controller controller) {
+	public MainMenu(final IController controller) {
 		this.controller = controller;
 
 		createObjects();

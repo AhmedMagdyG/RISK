@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public interface IGraph {
 		
 	public ArrayList<INode> getNodes();
+
+	public ArrayList<IEdge> getEdges();
 	
 	public ArrayList<IContinent> getContinents();
 	
