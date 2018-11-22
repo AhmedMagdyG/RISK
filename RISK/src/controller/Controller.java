@@ -105,8 +105,11 @@ public class Controller extends JFrame implements IController{
 	
 	private void buildGraph() {
 		graph = new Graph();
-		for(INode node: graph.getNodes()) {
+		for(INode node : graph.getNodes()) {
 			gameScreen.addNode(String.valueOf(node.getId()));
+			String playerColor = node.getOwnerType() ? "black" : "white";
+			// TODO: continent color
+			//gameScreen.setSoldiersInNode(String.valueOf(node.getId()), "red", playerColor, node.getSoldiers());
 		}
 		
 		for(IEdge e: graph.getEdges()) {
@@ -124,8 +127,8 @@ public class Controller extends JFrame implements IController{
 		AgentType player2AgentType = getStringMappingToAgentType(player2AgentTypeName);
 		initializeGamePlayers(player1AgentType, player2AgentType);
 		
-		gameScreen.setPlayerOneLabel(player1AgentTypeName);
-		gameScreen.setPlayerTwoLabel(player2AgentTypeName);
+		gameScreen.setPlayerOneLabel("Player 1 : " + player1AgentTypeName);
+		gameScreen.setPlayerTwoLabel("Player 2 : " + player2AgentTypeName);
 
 		buildGraph();
 		

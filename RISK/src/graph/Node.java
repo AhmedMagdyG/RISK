@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Node implements INode{
@@ -11,6 +12,18 @@ public class Node implements INode{
 	
 	public Node(int id) {
 		this.id = id;
+		this.neighbours = new ArrayList<INode>();
+	}
+	
+	public Node(int id, int soldiers) {
+		this.id = id;
+		this.soldiers = soldiers;
+		this.neighbours = new ArrayList<INode>();
+	}
+	
+	@Override
+	public void addNeighbour(INode node) {
+		neighbours.add(node);
 	}
 	
 	@Override

@@ -21,4 +21,6 @@ public interface INode {
 	public List<INode> getNeighbours();
 	
 	public boolean isNeighbour(INode node);
+	
+	public void addNeighbour(INode node);
 }
