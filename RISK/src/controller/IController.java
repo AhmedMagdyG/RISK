@@ -7,12 +7,16 @@ public interface IController {
 	
 	public boolean checkGameOver();
 	
-	public void initializeGame(AgentType player1Type, AgentType player2Type);
+	public void initializeGame(AgentType player1AgentType, AgentType player2AgentType);
 	
-	public Attack attack();
+	public boolean humanAttack(int fromId, int toId, int soldiers);
+	
+	public void attack();
 		
 	public IAgent getCurAgent();
 	
 	public void gamePlay();
+	
+	public void distributeBonus();
 	
 }

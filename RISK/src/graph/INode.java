@@ -1,13 +1,24 @@
 package graph;
 
+import java.util.List;
+
 public interface INode {
 	
 	public boolean getOwnerType();
 	
-	public void setOwnerType(boolean curOwnerType);
+	public void setOwnerType(boolean ownerType);
 	
-	public int getValue();
+	public int getSoldiers();
 	
-	public void setValue(int value);
+	public void setSoldiers(int value);
 	
+	public int getId();
+	
+	public int getLastOccupied();
+	
+	public void setLastOccupied(int lastOccupied);
+	
+	public List<INode> getNeighbours();
+	
+	public boolean isNeighbour(INode node);
 }

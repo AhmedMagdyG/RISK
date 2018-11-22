@@ -1,5 +1,11 @@
 package graph;
 
-public interface IContinent {
+import java.util.ArrayList;
 
+public interface IContinent {
+	
+	public ArrayList<INode> getNodes();
+	
+	public int getBonus();
+	
 }
