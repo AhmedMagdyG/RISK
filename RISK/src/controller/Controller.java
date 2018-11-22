@@ -109,7 +109,7 @@ public class Controller extends JFrame implements IController{
 			gameScreen.addNode(String.valueOf(node.getId()));
 			String playerColor = node.getOwnerType() ? "black" : "white";
 			// TODO: continent color
-			//gameScreen.setSoldiersInNode(String.valueOf(node.getId()), "red", playerColor, node.getSoldiers());
+			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), "red", playerColor, node.getSoldiers());
 		}
 		
 		for(IEdge e: graph.getEdges()) {
@@ -127,8 +127,8 @@ public class Controller extends JFrame implements IController{
 		AgentType player2AgentType = getStringMappingToAgentType(player2AgentTypeName);
 		initializeGamePlayers(player1AgentType, player2AgentType);
 		
-		gameScreen.setPlayerOneLabel("Player 1 : " + player1AgentTypeName);
-		gameScreen.setPlayerTwoLabel("Player 2 : " + player2AgentTypeName);
+		gameScreen.setPlayerOneLabel("White : " + player1AgentTypeName);
+		gameScreen.setPlayerTwoLabel("Black : " + player2AgentTypeName);
 
 		buildGraph();
 		

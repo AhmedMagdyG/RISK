@@ -53,12 +53,12 @@ public class GameScreen extends JPanel {
 	}
 
 	private void initButtons() {
-		playerOneLabel = new JLabel("Player 1 : SET THIS");
-		playerOneLabel.setBounds(950, 30, 250, 40);
+		playerOneLabel = new JLabel();
+		playerOneLabel.setBounds(955, 30, 250, 40);
 		add(playerOneLabel);
 		
-		playerTwoLabel = new JLabel("Player 2 : SET THIS");
-		playerTwoLabel.setBounds(950, 300, 250, 40);
+		playerTwoLabel = new JLabel();
+		playerTwoLabel.setBounds(955, 300, 250, 40);
 		add(playerTwoLabel);
 		
 		playerOneAttack = makeButton("Attack");
@@ -139,10 +139,10 @@ public class GameScreen extends JPanel {
 	
 	public void setSoldiersInNode(String id, String continentColor, String playerColor, int soldiers) {
 		Node node = graph.getNode(id);
+		node.setAttribute("ui.label", String.valueOf(soldiers));
 		node.setAttribute("ui.style", "stroke-mode: plain;" + 
 				  "text-style: bold; text-size: 15;" +
 				  "fill-color: " + continentColor + "; size: 30;" +
-				  "text-color: " + playerColor);
-		node.setAttribute("ui.label", String.valueOf(soldiers));
+				  "text-color: " + playerColor + ";");
 	}
 }
