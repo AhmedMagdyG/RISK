@@ -62,5 +62,10 @@ public class Controller extends JFrame {
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
 	}
+
+	public void skipAttack() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

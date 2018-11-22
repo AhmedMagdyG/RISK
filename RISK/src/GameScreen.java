@@ -1,5 +1,7 @@
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,7 +21,7 @@ public class GameScreen extends JPanel {
 	private Graph graph;
 	private JButton playerOneAttack, playerOneSkip;
 	private JButton playerTwoAttack, playerTwoSkip; 
-	private Clicks clicksListener;
+	private GraphListener clicksListener;
 	
 	public GameScreen(Controller controller) {
 		this.controller = controller;
@@ -37,7 +39,7 @@ public class GameScreen extends JPanel {
 		viewer.enableAutoLayout();
 		ViewPanel view = viewer.addDefaultView(false);
 		view.setBounds(0, 0, 800, 560);
-		clicksListener = new Clicks(graph, viewer);
+		clicksListener = new GraphListener(graph, viewer);
 		view.addMouseListener(clicksListener);
 		add(view);
 		
@@ -63,10 +65,20 @@ public class GameScreen extends JPanel {
 		
 		playerOneSkip = makeButton("Skip");
 		playerOneSkip.setBounds(960, 180, 80, 80);
+		playerOneSkip.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		} );
 		add(playerOneSkip);
 		
 		playerTwoSkip = makeButton("Skip");
 		playerTwoSkip.setBounds(960,  450, 80, 80);
+		playerTwoSkip.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		} );
 		add(playerTwoSkip);
 	}
 	
@@ -117,9 +129,4 @@ public class GameScreen extends JPanel {
 				  "text-color: " + playerColor);
 		node.setAttribute("ui.label", String.valueOf(soldiers));
 	}
-	
-	/*
-	 * TODO
-	 * attack / skip actions
-	 */
 }
