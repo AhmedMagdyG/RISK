@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.List;
+
 public interface INode {
 	
 	public boolean getOwnerType();
@@ -15,4 +17,6 @@ public interface INode {
 	public int getLastOccupied();
 	
 	public void setLastOccupied(int lastOccupied);
+	
+	public List<INode> getNeighbors();
 }

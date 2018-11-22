@@ -1,6 +1,7 @@
 package agent;
 
 import controller.Attack;
+import graph.IContinent;
 import graph.IGraph;
 import graph.INode;
 
@@ -21,14 +22,52 @@ public class PacifistAgent implements IAgent {
 
 	@Override
 	public Attack attack(IGraph graph) {
-		// TODO Auto-generated method stub
-		return null;
+		INode from = null, to = null;
+		int soldiers = -1;
+		for(IContinent continent : graph.getContinents()) {
+			for(INode node: continent.getNodes()) {
+				if(node.getOwnerType() == player) {
+					for(INode neighbor: node.getNeighbors()) {
+						if(neighbor.getOwnerType() == !player) {
+							if(node.getSoldiers() - neighbor.getSoldiers() > 1) {
+								if(from == null) {
+									from = node;
+									to = neighbor;
+									soldiers = neighbor.getSoldiers()+1;
+								} else {
+									if(neighbor.getSoldiers() + 1 < soldiers) {
+										from = node;
+										to = neighbor;
+										soldiers = neighbor.getSoldiers()+1;
+									} else if ((neighbor.getSoldiers() + 1 == soldiers)
+											&& (neighbor.getId() < to.getId())) {
+										from = node;
+										to = neighbor;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return new Attack(from, to, soldiers);
 	}
 
 	@Override
 	public INode deploy(IGraph graph, int soldiers) {
-		// TODO Auto-generated method stub
-		return null;
+		INode ret = graph.getContinents().get(0).getNodes().get(0);
+		for(IContinent continent : graph.getContinents()) {
+			for(INode node : continent.getNodes()) {
+				if(node.getSoldiers() < ret.getSoldiers()) {
+					ret = node;
+				} else if( (node.getSoldiers() == ret.getSoldiers()) 
+						&& (node.getId() < ret.getId())) {
+					ret = node;
+				}
+			}
+		}
+		return ret;
 	}
 
 	@Override

@@ -1,10 +1,13 @@
 package graph;
 
+import java.util.List;
+
 public class Node implements INode{
 	private boolean ownerType;
 	private int lastOccupied;
 	private int soldiers;
 	private int id;
+	private List<INode> neighbors;
 	
 	public Node(int id) {
 		this.id = id;
@@ -39,6 +42,11 @@ public class Node implements INode{
 	@Override
 	public void setLastOccupied(int lastOccupied) {
 		this.lastOccupied = lastOccupied;
+	}
+
+	@Override
+	public List<INode> getNeighbors() {
+		return this.neighbors;
 	}
 	
 	
