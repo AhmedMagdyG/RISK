@@ -1,6 +1,7 @@
 package agent;
 
 import controller.Attack;
+import graph.IContinent;
 import graph.IGraph;
 import graph.INode;
 
@@ -25,8 +26,18 @@ public class PassiveAgent implements IAgent {
 
 	@Override
 	public INode deploy(IGraph graph, int soldiers) {
-		// TODO Auto-generated method stub
-		return null;
+		INode ret = graph.getContinents().get(0).getNodes().get(0);
+		for(IContinent continent : graph.getContinents()) {
+			for(INode node : continent.getNodes()) {
+				if(node.getSoldiers() < ret.getSoldiers()) {
+					ret = node;
+				} else if( (node.getSoldiers() == ret.getSoldiers()) 
+						&& (node.getId() < ret.getId())) {
+					ret = node;
+				}
+			}
+		}
+		return ret;
 	}
 
 	@Override
