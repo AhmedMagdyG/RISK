@@ -142,19 +142,16 @@ public class Controller extends JFrame implements IController {
 			curPlayer = role ? player2 : player1;
 			gameScreen.setEnabledPlayerOne(!role);
 			gameScreen.setEnabledPlayerTwo(role);
-			distributeBonusHandler();
-			// roleRunning = true;
-			// while(roleRunning) {
-			// try {
-			// Thread.sleep(100);
-			// } catch (InterruptedException e) {
-			// }
-			// }
-			nonhumanAttack();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(curPlayer.getAgentType() != AgentType.HUMAN) {
+				nonhumanDistributeBonus();
+				nonhumanAttack();
+			}
+			while(!roleRunning) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		gameScreen.setLogMessage("Player " + String.valueOf(role ? 2 : 1) + " won!");
@@ -184,6 +181,7 @@ public class Controller extends JFrame implements IController {
 		from.setSoldiers(from.getSoldiers() - soldiers);
 		to.setSoldiers(soldiers - to.getSoldiers());
 
+		roleRunning = false;
 		return true;
 	}
 
@@ -199,6 +197,7 @@ public class Controller extends JFrame implements IController {
 		attackObject.getTo().setOwnerType(curPlayer.getPlayer());
 		// set view values
 
+		roleRunning = false;
 	}
 
 	@Override
@@ -207,8 +206,6 @@ public class Controller extends JFrame implements IController {
 			nonhumanAttack();
 		else
 			humanAttack();
-
-		roleRunning = false;
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class GameScreen extends JPanel {
 		playerOneAttack.setBounds(960, 80, 80, 80);
 		playerOneAttack.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
-				    controller.skipAttack();
+				    controller.humanAttack();
 			  }
 		});
 		add(playerOneAttack);
@@ -74,7 +74,7 @@ public class GameScreen extends JPanel {
 		playerTwoAttack.setBounds(960, 350, 80, 80);
 		playerTwoAttack.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
-				    controller.skipAttack();
+				    controller.humanAttack();
 			  }
 		});
 		add(playerTwoAttack);
