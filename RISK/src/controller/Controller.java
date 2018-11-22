@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.CardLayout;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -108,8 +109,7 @@ public class Controller extends JFrame implements IController{
 		for(INode node : graph.getNodes()) {
 			gameScreen.addNode(String.valueOf(node.getId()));
 			String playerColor = node.getOwnerType() ? "black" : "white";
-			// TODO: continent color
-			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), "red", playerColor, node.getSoldiers());
+			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor, node.getSoldiers());
 		}
 		
 		for(IEdge e: graph.getEdges()) {

@@ -8,4 +8,6 @@ public interface IContinent {
 	
 	public int getBonus();
 	
+	public String getColor();
+	
 }

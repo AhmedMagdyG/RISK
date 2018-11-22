@@ -39,6 +39,8 @@ public class Graph implements IGraph{
 				}
 				int bonus = in.nextInt();
 				continents.add(new Continent(continentNodes, bonus));
+				for(INode node : continentNodes)
+					node.setContinent(continents.get(i));
 			}
 			n = in.nextInt();
 			while(n-- > 0) {

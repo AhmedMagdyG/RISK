@@ -23,4 +23,8 @@ public interface INode {
 	public boolean isNeighbour(INode node);
 	
 	public void addNeighbour(INode node);
+	
+	public IContinent getContinent();
+	
+	public void setContinent(IContinent continent);
 }

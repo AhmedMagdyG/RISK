@@ -9,6 +9,7 @@ public class Node implements INode{
 	private int soldiers;
 	private int id;
 	private List<INode> neighbours;
+	private IContinent continent;
 	
 	public Node(int id) {
 		this.id = id;
@@ -19,6 +20,16 @@ public class Node implements INode{
 		this.id = id;
 		this.soldiers = soldiers;
 		this.neighbours = new ArrayList<INode>();
+	}
+	
+	@Override
+	public IContinent getContinent() {
+		return continent;
+	}
+	
+	@Override
+	public void setContinent(IContinent continent) {
+		this.continent = continent;
 	}
 	
 	@Override
