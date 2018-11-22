@@ -8,10 +8,12 @@ import graph.INode;
 public class AggressiveAgent implements IAgent {
 	private AgentType agentType;
 	private boolean player;
+	private boolean lastTurnAttack;
 	
 	public AggressiveAgent(AgentType agentType, boolean player) {
 		this.agentType = agentType;
 		this.player = player;
+		this.lastTurnAttack = false;
 	}
 	
 	@Override
@@ -21,7 +23,7 @@ public class AggressiveAgent implements IAgent {
 
 	@Override
 	public Attack attack(IGraph graph) {
-		//TODO
+		//TODO - update last turn attack
 		return null;
 	}
 
@@ -44,6 +46,11 @@ public class AggressiveAgent implements IAgent {
 	@Override
 	public boolean getPlayer() {
 		return player;
+	}
+	
+	@Override
+	public boolean lastTurnAttack() {
+		return this.lastTurnAttack;
 	}
 
 }

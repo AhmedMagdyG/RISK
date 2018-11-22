@@ -17,4 +17,6 @@ public interface IAgent {
 	public INode deploy(IGraph graph, int soldiers);
 	
 	public boolean getPlayer();
+	
+	public boolean lastTurnAttack();
 }

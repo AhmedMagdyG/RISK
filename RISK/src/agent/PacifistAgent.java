@@ -8,16 +8,18 @@ import graph.INode;
 public class PacifistAgent implements IAgent {
 	private AgentType agentType;
 	private boolean player;
+	private boolean lastTurnAttack;
 	
 	public PacifistAgent(AgentType agentType, boolean player) {
 		this.agentType = agentType;
 		this.player = player;
+		this.lastTurnAttack = false;
 		
 	}
 	
 	@Override
 	public AgentType getAgentType() {
-		return agentType;
+		return this.agentType;
 	}
 
 	@Override
@@ -51,6 +53,11 @@ public class PacifistAgent implements IAgent {
 				}
 			}
 		}
+		if(from == null) {
+			this.lastTurnAttack = false;
+			return null;
+		}
+		this.lastTurnAttack = true;
 		return new Attack(from, to, soldiers);
 	}
 
@@ -73,6 +80,11 @@ public class PacifistAgent implements IAgent {
 	@Override
 	public boolean getPlayer() {
 		return this.player;
+	}
+
+	@Override
+	public boolean lastTurnAttack() {
+		return lastTurnAttack;
 	}
 
 }

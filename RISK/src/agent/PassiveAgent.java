@@ -8,10 +8,12 @@ import graph.INode;
 public class PassiveAgent implements IAgent {
 	private AgentType agentType;
 	private boolean player;
+	private boolean lastTurnAttack;
 	
 	public PassiveAgent(AgentType agentType, boolean player) {
 		this.agentType = agentType;
 		this.player = player;
+		this.lastTurnAttack = false;
 	}
 	
 	@Override
@@ -45,4 +47,9 @@ public class PassiveAgent implements IAgent {
 		return this.player;
 	}
 
+	@Override
+	public boolean lastTurnAttack() {
+		return this.lastTurnAttack;
+	}
+	
 }
