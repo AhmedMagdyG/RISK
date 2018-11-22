@@ -10,13 +10,15 @@ public interface INode {
 	
 	public int getSoldiers();
 	
-	public void setSoldiers(int value);
+	public void setSoldiers(int soldiers);
 	
-	public int getId();
+	public int getNodeId();
 	
 	public int getLastOccupied();
 	
 	public void setLastOccupied(int lastOccupied);
 	
 	public List<INode> getNeighbors();
+	
+	public int getContinentId();
 }

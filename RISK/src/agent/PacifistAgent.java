@@ -42,7 +42,7 @@ public class PacifistAgent implements IAgent {
 										to = neighbor;
 										soldiers = neighbor.getSoldiers()+1;
 									} else if ((neighbor.getSoldiers() + 1 == soldiers)
-											&& (neighbor.getId() < to.getId())) {
+											&& (neighbor.getNodeId() < to.getNodeId())) {
 										from = node;
 										to = neighbor;
 									}
@@ -69,7 +69,7 @@ public class PacifistAgent implements IAgent {
 				if(node.getSoldiers() < ret.getSoldiers()) {
 					ret = node;
 				} else if( (node.getSoldiers() == ret.getSoldiers()) 
-						&& (node.getId() < ret.getId())) {
+						&& (node.getNodeId() < ret.getNodeId())) {
 					ret = node;
 				}
 			}
@@ -84,7 +84,7 @@ public class PacifistAgent implements IAgent {
 
 	@Override
 	public boolean lastTurnAttack() {
-		return lastTurnAttack;
+		return this.lastTurnAttack;
 	}
 
 }

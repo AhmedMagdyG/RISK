@@ -6,11 +6,13 @@ public class Node implements INode{
 	private boolean ownerType;
 	private int lastOccupied;
 	private int soldiers;
-	private int id;
+	private int nodeId;
+	private int continentId;
 	private List<INode> neighbors;
 	
-	public Node(int id) {
-		this.id = id;
+	public Node(int nodeId, int continentId) {
+		this.nodeId = nodeId;
+		this.continentId = continentId;
 	}
 	
 	@Override
@@ -26,12 +28,12 @@ public class Node implements INode{
 		return soldiers;
 	}
 	@Override
-	public void setSoldiers(int value) {
+	public void setSoldiers(int soldiers) {
 		this.soldiers = soldiers;
 	}
 	@Override
-	public int getId() {
-		return this.id;
+	public int getNodeId() {
+		return this.nodeId;
 	}
 
 	@Override
@@ -47,6 +49,11 @@ public class Node implements INode{
 	@Override
 	public List<INode> getNeighbors() {
 		return this.neighbors;
+	}
+
+	@Override
+	public int getContinentId() {
+		return this.continentId;
 	}
 	
 	

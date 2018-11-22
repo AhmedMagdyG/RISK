@@ -7,4 +7,6 @@ public interface IContinent {
 	
 	public int getBouns();
 	
+	public int getContinentId();
+	
 }
