@@ -1,5 +1,10 @@
 package graph;
 
-public interface IContinent {
+import java.util.List;
 
+public interface IContinent {
+	public List<INode> getNodes();
+	
+	public int getBouns();
+	
 }

@@ -1,11 +1,13 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import agent.AgentFactory;
 import agent.AgentType;
 import agent.IAgent;
 import graph.Graph;
+import graph.IContinent;
 import graph.IGraph;
 import graph.INode;
 
@@ -16,12 +18,14 @@ public class Controller implements IController{
 	
 	@Override
 	public boolean checkGameOver() {
-		ArrayList<INode> nodes = graph.getNodes();
-		for(INode node: nodes) {
-			if(node.getOwnerType() != nodes.get(0).getOwnerType())
-				return false;
+		List<IContinent> continents = graph.getContinents();
+		boolean ownerType = continents.get(0).getNodes().get(0).getOwnerType();
+		for(IContinent continent : continents) {
+			for(INode node: continent.getNodes()) {
+				if(node.getOwnerType() != ownerType)
+					return false;
+			}
 		}
-		
 		return true;
 	}
 

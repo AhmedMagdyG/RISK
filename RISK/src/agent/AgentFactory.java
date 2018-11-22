@@ -14,8 +14,16 @@ public class AgentFactory implements IAgentFactory {
 	
 	@Override
 	public IAgent getAgent(AgentType type) {
-		// TODO Auto-generated method stub
-		return null;
+		switch (type) {
+			case PASSIVE:
+				return new PassiveAgent(type);
+			case AGGRESSIVE:
+				return new AggressiveAgent(type);
+			case PACIFIST:
+				return new PacifistAgent(type);
+			default:
+				return null;
+		}	
 	}
 
 }

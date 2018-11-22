@@ -1,9 +1,9 @@
 package graph;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IGraph {
 		
-	ArrayList<INode> getNodes();
+	public List<IContinent> getContinents();
 	
 }

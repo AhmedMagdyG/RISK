@@ -1,11 +1,10 @@
 package graph;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Graph implements IGraph{
 	static final String INITIALIZE_FILE_PATH = "graph.txt";
-	
-	ArrayList<INode> nodes;
+	private List<IContinent> continents; 
 	
 	public Graph() {
 		// initialize graph
@@ -13,8 +12,8 @@ public class Graph implements IGraph{
 
 
 	@Override
-	public ArrayList<INode> getNodes() {
-		return nodes;
+	public List<IContinent> getContinents() {
+		return continents;
 	}
 	
 	

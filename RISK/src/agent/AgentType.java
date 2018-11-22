@@ -1,5 +1,5 @@
 package agent;
 
 public enum AgentType {
-	HUMAN
+	HUMAN, PASSIVE, AGGRESSIVE, PACIFIST
 }
