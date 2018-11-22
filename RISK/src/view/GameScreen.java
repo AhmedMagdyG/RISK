@@ -1,6 +1,10 @@
-package view;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,10 +22,10 @@ public class GameScreen extends JPanel {
 	private Graph graph;
 	private JButton playerOneAttack, playerOneSkip;
 	private JButton playerTwoAttack, playerTwoSkip; 
-	private Clicks clicksListener;
+	private GraphListener clicksListener;
 	
 	public GameScreen(Controller controller) {
-		this.setController(controller);
+		this.controller = controller;
 
 		setLayout(null);
 		setPreferredSize(new Dimension(1200, 600));
@@ -36,37 +40,54 @@ public class GameScreen extends JPanel {
 		viewer.enableAutoLayout();
 		ViewPanel view = viewer.addDefaultView(false);
 		view.setBounds(0, 0, 800, 560);
-		clicksListener = new Clicks(graph, viewer);
+		clicksListener = new GraphListener(graph, viewer);
 		view.addMouseListener(clicksListener);
+		view.setBorder(BorderFactory.createLineBorder(Color.black));
 		add(view);
 		
 		initButtons();
 	}
 
 	private void initButtons() {
-		playerOneLabel = new JLabel();
+		playerOneLabel = new JLabel("Player 1 : SET THIS");
 		playerOneLabel.setBounds(950, 30, 250, 40);
 		add(playerOneLabel);
 		
-		playerTwoLabel = new JLabel();
+		playerTwoLabel = new JLabel("Player 2 : SET THIS");
 		playerTwoLabel.setBounds(950, 300, 250, 40);
 		add(playerTwoLabel);
 		
-		playerOneAttack = new JButton("Attack");
+		playerOneAttack = makeButton("Attack");
 		playerOneAttack.setBounds(960, 80, 80, 80);
 		add(playerOneAttack);
 		
-		playerTwoAttack = new JButton("Attack");
+		playerTwoAttack = makeButton("Attack");
 		playerTwoAttack.setBounds(960, 350, 80, 80);
 		add(playerTwoAttack);
 		
-		playerOneSkip = new JButton("Skip");
+		playerOneSkip = makeButton("Skip");
 		playerOneSkip.setBounds(960, 180, 80, 80);
+		playerOneSkip.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		} );
 		add(playerOneSkip);
 		
-		playerTwoSkip = new JButton("Skip");
+		playerTwoSkip = makeButton("Skip");
 		playerTwoSkip.setBounds(960,  450, 80, 80);
+		playerTwoSkip.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				    controller.skipAttack();
+			  }
+		} );
 		add(playerTwoSkip);
+	}
+	
+	private JButton makeButton(String name) {
+		JButton ret = new JButton(new ImageIcon(new ImageIcon(getClass()
+				.getResource("/images/" + name + ".jpg")).getImage()));
+		return ret;
 	}
 	
 	/**
@@ -102,26 +123,12 @@ public class GameScreen extends JPanel {
 		graph.addEdge(id, u, v);
 	}
 	
-	public void setSoldiersInNode(String id, boolean playerID, int soldiers) {
-		String color = playerID ? "white" : "black";
+	public void setSoldiersInNode(String id, String continentColor, String playerColor, int soldiers) {
 		Node node = graph.getNode(id);
 		node.setAttribute("ui.style", "stroke-mode: plain;" + 
 				  "text-style: bold; text-size: 15;" +
-				  "fill-color: red; size: 30;" +
-				  "text-color: " + color);
+				  "fill-color: " + continentColor + "; size: 30;" +
+				  "text-color: " + playerColor);
 		node.setAttribute("ui.label", String.valueOf(soldiers));
 	}
-
-	public Controller getController() {
-		return controller;
-	}
-
-	public void setController(Controller controller) {
-		this.controller = controller;
-	}
-	
-	/*
-	 * TODO
-	 * attack / skip actions
-	 */
 }

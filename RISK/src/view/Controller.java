@@ -1,4 +1,3 @@
-package view;
 import java.awt.CardLayout;
 
 import javax.swing.JFrame;
@@ -56,12 +55,17 @@ public class Controller extends JFrame {
 	}
 	
 	public void startGame() {
-//		String playerOne = mainMenu.getPlayerOneName();
-//		String playerTwo = mainMenu.getPlayerTwoName();
+		String playerOne = mainMenu.getPlayerOneName();
+		String playerTwo = mainMenu.getPlayerTwoName();
 		// inits
 		
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
+	}
+
+	public void skipAttack() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

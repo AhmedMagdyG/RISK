@@ -1,4 +1,3 @@
-package view;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -43,7 +42,7 @@ public class MainMenu extends JPanel {
 		setLayout(new GridBagLayout());
 		add(body, new GridBagConstraints());
 		setOpaque(false);
-
+				
 		repaint();
 	}
 
@@ -63,9 +62,7 @@ public class MainMenu extends JPanel {
 	
 	private JButton makeButton(String name) {
 		JButton ret = new JButton(new ImageIcon(new ImageIcon(getClass()
-				.getResource("/images/" + name + ".png")).getImage()
-				.getScaledInstance(90, 40, Image.SCALE_DEFAULT)));
-
+				.getResource("/images/" + name + ".jpg")).getImage()));
 		ret.setBorderPainted(false);
 		ret.setContentAreaFilled(false);
 		return ret;
