@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.CardLayout;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,11 +16,10 @@ import graph.INode;
 import view.GameScreen;
 import view.MainMenu;
 
-
-public class Controller extends JFrame implements IController{
+public class Controller extends JFrame implements IController {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private final static boolean PLAYER1_ID = false, PLAYER2_ID = true;
@@ -36,12 +34,13 @@ public class Controller extends JFrame implements IController{
 	private GameScreen gameScreen;
 
 	private boolean gameRunning, roleRunning;
+
 	// remainging agents
-//	"Nearly Pacifist",
-//	"Greedy", "A*", "Real-time A*" 
+	// "Nearly Pacifist",
+	// "Greedy", "A*", "Real-time A*"
 	private AgentType getStringMappingToAgentType(String agentType) {
 		switch (agentType) {
-		case "Human": 
+		case "Human":
 			return AgentType.HUMAN;
 		case "Passive":
 			return AgentType.PASSIVE;
@@ -51,7 +50,7 @@ public class Controller extends JFrame implements IController{
 			return null;
 		}
 	}
-	
+
 	public Controller() {
 		super("RISK");
 
@@ -72,9 +71,10 @@ public class Controller extends JFrame implements IController{
 		setVisible(true);
 
 		showMainMenu();
-
+		gamePlay();
 	}
-	
+
+	@Override
 	public void showMainMenu() {
 		cardLayout.show(cardPanel, MAIN_MENU);
 		gameRunning = false;
@@ -85,133 +85,148 @@ public class Controller extends JFrame implements IController{
 			}
 		}
 		requestFocus();
-		
-		//gameScreen.startGame();
 	}
-	
+
 	@Override
 	public boolean checkGameOver() {
 		ArrayList<INode> nodes = graph.getNodes();
-		for(INode node: nodes) {
-			if(node.getOwnerType() != nodes.get(0).getOwnerType())
+		for (INode node : nodes) {
+			if (node.getOwnerType() != nodes.get(0).getOwnerType())
 				return false;
 		}
 		return true;
 	}
-	
+
 	private void initializeGamePlayers(AgentType player1AgentType, AgentType player2AgentType) {
 		player1 = AgentFactory.getInstance().getAgent(player1AgentType, PLAYER1_ID);
 		player2 = AgentFactory.getInstance().getAgent(player2AgentType, PLAYER2_ID);
 	}
-	
+
 	private void buildGraph() {
 		graph = new Graph();
-		for(INode node : graph.getNodes()) {
+		for (INode node : graph.getNodes()) {
 			gameScreen.addNode(String.valueOf(node.getId()));
 			String playerColor = node.getOwnerType() ? "black" : "white";
-			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor, node.getSoldiers());
+			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor,
+					node.getSoldiers());
 		}
-		
-		for(IEdge e: graph.getEdges()) {
+
+		for (IEdge e : graph.getEdges()) {
 			gameScreen.addEdge(String.valueOf(e.getId()), String.valueOf(e.getU().getId()),
-					           String .valueOf(e.getV().getId()));
+					String.valueOf(e.getV().getId()));
 		}
 	}
-	
+
 	@Override
 	public void startGame() {
 		String player1AgentTypeName = mainMenu.getPlayerOneName();
 		String player2AgentTypeName = mainMenu.getPlayerTwoName();
-	
+
 		AgentType player1AgentType = getStringMappingToAgentType(player1AgentTypeName);
 		AgentType player2AgentType = getStringMappingToAgentType(player2AgentTypeName);
 		initializeGamePlayers(player1AgentType, player2AgentType);
-		
+
 		gameScreen.setPlayerOneLabel("White : " + player1AgentTypeName);
 		gameScreen.setPlayerTwoLabel("Black : " + player2AgentTypeName);
 
 		buildGraph();
-		
+
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
 	}
 
-	
-	
-	
 	@Override
 	public void gamePlay() {
-		for(boolean role = false; !checkGameOver() ; role ^= true) {
-			curPlayer = role ? player2: player1;
-			roleRunning = true;
-			while(roleRunning) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-				}
-			}
+		boolean role;
+		for (role = false; !checkGameOver(); role ^= true) {
+			curPlayer = role ? player2 : player1;
+			gameScreen.setEnabledPlayerOne(!role);
+			gameScreen.setEnabledPlayerTwo(role);
 			distributeBonusHandler();
+			// roleRunning = true;
+			// while(roleRunning) {
+			// try {
+			// Thread.sleep(100);
+			// } catch (InterruptedException e) {
+			// }
+			// }
+			nonhumanAttack();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		// declare the winner
+		gameScreen.setLogMessage("Player " + String.valueOf(role ? 2 : 1) + " won!");
+		gameScreen.setEnabledPlayerOne(false);
+		gameScreen.setEnabledPlayerTwo(false);
 	}
-	
-	
+
 	@Override
 	public void skipAttack() {
 		// hide input fields
 		roleRunning = false;
 	}
-	
+
 	@Override
 	public boolean humanAttack() {
-		int fromId = 0, toId = 0, soldiers = 0; //show input fields and read data
-		
+		int fromId = 0, toId = 0, soldiers = 0; // show input fields and read data
+
 		INode from = graph.getNodeById(fromId), to = graph.getNodeById(toId);
-		if(from == null || to == null) return false;
-		
-		if(!from.isNeighbour(to)) return false;
-		
-		if(from.getSoldiers() <= soldiers || soldiers <= to.getSoldiers()) return false; 
-		from.setSoldiers(from.getSoldiers()-soldiers);
-		to.setSoldiers(soldiers-to.getSoldiers());
-		
+		if (from == null || to == null)
+			return false;
+
+		if (!from.isNeighbour(to))
+			return false;
+
+		if (from.getSoldiers() <= soldiers || soldiers <= to.getSoldiers())
+			return false;
+		from.setSoldiers(from.getSoldiers() - soldiers);
+		to.setSoldiers(soldiers - to.getSoldiers());
+
 		return true;
 	}
-	
+
 	@Override
 	public void nonhumanAttack() {
 		Attack attackObject = curPlayer.attack(graph);
-		int newFromSoldiers = attackObject.getFrom().getSoldiers()-attackObject.getSoldiers();
+		if (attackObject == null)
+			return;
+		int newFromSoldiers = attackObject.getFrom().getSoldiers() - attackObject.getSoldiers();
 		attackObject.getFrom().setSoldiers(newFromSoldiers);
-		int newToSoldiers = attackObject.getSoldiers()-attackObject.getTo().getSoldiers();
+		int newToSoldiers = attackObject.getSoldiers() - attackObject.getTo().getSoldiers();
 		attackObject.getTo().setSoldiers(newToSoldiers);
 		attackObject.getTo().setOwnerType(curPlayer.getPlayer());
 		// set view values
-		
+
 	}
-	
-	@Override 
+
+	@Override
 	public void attackHandler() {
-		if(curPlayer.getAgentType() != AgentType.HUMAN) nonhumanAttack();
-		else humanAttack();
-		
+		if (curPlayer.getAgentType() != AgentType.HUMAN)
+			nonhumanAttack();
+		else
+			humanAttack();
+
 		roleRunning = false;
 	}
-	
+
 	@Override
 	public IAgent getCurAgent() {
 		return curPlayer;
 	}
 
-	
-	
 	@Override
 	public void nonhumanDistributeBonus() {
-		curPlayer.deploy(graph, graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack()));
+		int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
+		INode node = curPlayer.deploy(graph, bonus);
+		node.setSoldiers(node.getSoldiers() + bonus);
+		String playerColor = node.getOwnerType() ? "black" : "white";
+		gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor,
+				node.getSoldiers());
 	}
 
-	
-	@Override 
+	@Override
 	public void humanDistributeBonus() {
 		// show fields
 		int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
@@ -219,20 +234,14 @@ public class Controller extends JFrame implements IController{
 
 	@Override
 	public void distributeBonusHandler() {
-		if(curPlayer.getAgentType() == AgentType.HUMAN)
+		if (curPlayer.getAgentType() == AgentType.HUMAN)
 			humanDistributeBonus();
-		else 
+		else
 			nonhumanDistributeBonus();
 	}
-	
-	public static void main(String []args) {
+
+	public static void main(String[] args) {
 		new Controller();
 	}
-	
+
 }
-
-
-
-
-
-
