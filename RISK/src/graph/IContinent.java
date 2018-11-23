@@ -10,4 +10,6 @@ public interface IContinent {
 	
 	public String getColor();
 	
+	public int getId();
+	
 }
