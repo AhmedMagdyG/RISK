@@ -27,6 +27,8 @@ public class AgentFactory implements IAgentFactory {
 			return new PacifistAgent(type, player, graph);
 		case GREEDY:
 			return new GreedyAgent(type, player, graph);
+		case A_STAR:
+			return new AStarAgent(type, player, graph);
 		default:
 			return null;
 		}

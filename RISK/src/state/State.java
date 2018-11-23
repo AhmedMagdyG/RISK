@@ -2,8 +2,7 @@ package state;
 
 import java.util.ArrayList;
 
-public class State {
-
+public class State implements Comparable<State> {
 	private int cost;
 	private ArrayList<Integer> soldiers;
 	private ArrayList<Boolean> nodeOwner;
@@ -72,6 +71,23 @@ public class State {
 
 	public int getLastAttackSoldiers() {
 		return lastAttackSoldiers;
+	}
+
+	@Override
+	public int compareTo(State arg0) {
+		if (cost < arg0.cost)
+			return -1;
+		else if (cost > arg0.cost)
+			return 1;
+		else if (equals(arg0))
+			return 0;
+		int soldierCompare = (this.getSoldiers().toString()).compareTo(arg0.getSoldiers().toString());
+		if (soldierCompare != 0)
+			return soldierCompare;
+		int ownerCompare = this.getNodeOwner().toString().compareTo(arg0.getNodeOwner().toString());
+		if (ownerCompare != 0)
+			return ownerCompare;
+		return 0;
 	}
 
 }

@@ -19,11 +19,11 @@ import controller.IController;
 
 @SuppressWarnings("serial")
 public class MainMenu extends JPanel {
-	
+
 	private JButton play;
 	private JComboBox<String> playerOneSelector, playerTwoSelector;
-	private String[] playerNames = { "Human", "Passive", "Aggressive", "Nearly Pacifist",
-			"Greedy", "A*", "Real-time A*" };
+	private String[] playerNames = { "Human", "Passive", "Aggressive", "Nearly Pacifist", "Greedy", "A Star",
+			"Real-time A*" };
 	private JPanel body;
 	private IController controller;
 
@@ -31,10 +31,10 @@ public class MainMenu extends JPanel {
 		this.controller = controller;
 
 		createObjects();
-		
+
 		body.setLayout(new FlowLayout());
 		body.setOpaque(false);
-				
+
 		body.add(playerOneSelector);
 		body.add(play);
 		body.add(playerTwoSelector);
@@ -46,27 +46,28 @@ public class MainMenu extends JPanel {
 		setLayout(new GridBagLayout());
 		add(body, new GridBagConstraints());
 		setOpaque(false);
-				
+
 		repaint();
 	}
 
 	void createObjects() {
 		body = new JPanel();
-		
+
 		play = makeButton("play");
-		play.addActionListener(new ActionListener() { 
-			  public void actionPerformed(ActionEvent e) { 
-				    controller.startGame();
-			  }
-		} );
-		
+		play.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.startGame();
+			}
+		});
+
 		playerOneSelector = new JComboBox<String>(playerNames);
 		playerTwoSelector = new JComboBox<String>(playerNames);
 	}
-	
+
 	private JButton makeButton(String name) {
-		JButton ret = new JButton(new ImageIcon(new ImageIcon(getClass()
-				.getResource("/images/" + name + ".jpg")).getImage()));
+		JButton ret = new JButton(
+				new ImageIcon(new ImageIcon(getClass().getResource("/images/" + name + ".jpg")).getImage()));
 		ret.setBorderPainted(false);
 		ret.setContentAreaFilled(false);
 		return ret;
@@ -84,9 +85,8 @@ public class MainMenu extends JPanel {
 	public void paintComponent(final Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		Image img = new ImageIcon(getClass().getResource("/images/risk.jpg"))
-				.getImage();
+		Image img = new ImageIcon(getClass().getResource("/images/risk.jpg")).getImage();
 		g2.drawImage(img, 0, 0, 1200, 600, null, null);
 	}
-	
+
 }

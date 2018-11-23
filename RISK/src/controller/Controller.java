@@ -49,7 +49,7 @@ public class Controller extends JFrame implements IController {
 			return AgentType.PACIFIST;
 		case "Greedy":
 			return AgentType.GREEDY;
-		case "A*":
+		case "A Star":
 			return AgentType.A_STAR;
 		case "Real-time A*":
 			return AgentType.RTA_STAR;
