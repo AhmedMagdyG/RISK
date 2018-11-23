@@ -10,7 +10,9 @@ import graph.INode;
 import state.State;
 import state.StateContainer;
 
-public class AStarAgent implements IAgent {
+public class RTAStarAgent implements IAgent{
+
+	private final int DEPTH_LIMIT = 2;
 	private AgentType agentType;
 	private boolean player;
 	private boolean lastTurnAttack;
@@ -20,18 +22,18 @@ public class AStarAgent implements IAgent {
 	private ArrayList<INode> deploySequence;
 	private ArrayList<Attack> attackSequence;
 
-	public AStarAgent(AgentType agentType, boolean player, IGraph graph) {
+	public RTAStarAgent(AgentType agentType, boolean player, IGraph graph) {
 		this.agentType = agentType;
 		this.player = player;
 		this.lastTurnAttack = false;
-
+		
 		deployIndex = attackIndex = 0;
 		deploySequence = new ArrayList<INode>();
 		attackSequence = new ArrayList<Attack>();
-
+		
 		preprocess(graph);
 	}
-
+	
 	@Override
 	public AgentType getAgentType() {
 		return this.agentType;
@@ -56,38 +58,87 @@ public class AStarAgent implements IAgent {
 	public boolean lastTurnAttack() {
 		return lastTurnAttack;
 	}
-
+	
 	@Override
 	public void setLastTurnAttack(boolean lastTurnAttack) {
 		this.lastTurnAttack = lastTurnAttack;
 	}
+	
+	private State getBestNextState(State S, 
+							StateContainer visited, StateContainer visited1, IGraph graph) {
+		
+		if(S == null) return null;
+
+		State bestState = S;
+		StateContainer frontier = new StateContainer();
+		frontier.add(S);
+		for(int depth = 1; depth < DEPTH_LIMIT; ++depth) {
+			StateContainer nextFrontier = new StateContainer();
+			while (!frontier.isEmpty()) {
+				State cur = frontier.getMin();
+				
+				if(cur.getCost() < bestState.getCost())
+					bestState = cur;
+				if (cur.gameOver()) 
+					continue;
+				
+				visited1.add(cur);
+	
+				ArrayList<State> neighbours = getNeighbours(cur, graph);
+				for (State s : neighbours)
+					if (!frontier.exists(s) && !nextFrontier.exists(s) && !visited.exists(s) && !visited1.exists(s)) {
+						s.setParent(cur);
+						nextFrontier.add(s);
+					}
+			}
+			frontier = nextFrontier;
+		}
+
+		return bestState;
+	}
+	
+	private boolean RTA(State cur, IGraph graph, StateContainer visited) {
+		if(cur == null || visited.exists(cur)) 
+			return false;
+		if(cur.gameOver()) {
+			buildPlayStrategy(cur, graph);
+			System.out.print("Greedy agent found a strategy in ");
+			System.out.print(deploySequence.size());
+			System.out.println(" steps.");
+			return true;
+		}
+		
+		visited.add(cur);
+		boolean canReach = false;
+		while(!canReach) {
+			State nextState = null;
+			
+			ArrayList<State> neighbours = getNeighbours(cur, graph);
+			for(State neighbour: neighbours) {
+				if(!visited.exists(neighbour)) {
+					neighbour.setParent(cur);
+					State curState = getBestNextState(neighbour, visited, new StateContainer(), graph);
+					if(nextState == null || curState.getCost() < nextState.getCost())
+						nextState = curState;
+				}
+			}
+			
+			canReach |= RTA(nextState, graph, visited);
+			if(nextState == null) break;
+		}
+		
+		return canReach;
+	}
 
 	private void preprocess(IGraph graph) {
-		StateContainer frontier = new StateContainer();
 		StateContainer visited = new StateContainer();
 		State initialState = getInitialState(graph);
 		if (player)
 			makePassiveMove(initialState, graph);
-		frontier.add(initialState);
-		while (!frontier.isEmpty()) {
-			State cur = frontier.getMin();
-			if (cur.gameOver()) {
-				buildPlayStrategy(cur, graph);
-				System.out.print("A* agent found a strategy in ");
-				System.out.print(deploySequence.size());
-				System.out.println(" steps.");
-				return;
-			}
-			visited.add(cur);
-
-			ArrayList<State> neighbours = getNeighbours(cur, graph);
-			for (State s : neighbours)
-				if (!visited.exists(s)) {
-					s.setParent(cur);
-					frontier.add(s);
-				}
-		}
+		
+		RTA(initialState, graph, visited);
 	}
+
 
 	// Makes 2 moves, one for greedy and one for passive
 	private ArrayList<State> getNeighbours(State cur, IGraph graph) {
@@ -100,7 +151,7 @@ public class AStarAgent implements IAgent {
 		if (cur.getLastAttackSoldiers() > 0)
 			bonus += 2;
 
-		int cost = cur.getCost();
+		int cost = graph.getNodes().size() - playerNodes.size();
 
 		ArrayList<State> ret = new ArrayList<State>();
 		for (int deployNode : playerNodes) {
@@ -108,7 +159,7 @@ public class AStarAgent implements IAgent {
 			ArrayList<Integer> newSoldiers = cloneInt(cur.getSoldiers());
 			ArrayList<Boolean> newOwners = cloneBool(cur.getNodeOwner());
 			newSoldiers.set(deployNode, newSoldiers.get(deployNode) + bonus);
-			State newState = new State(cost + 1, newSoldiers, newOwners, deployNode, 0, 0, 0);
+			State newState = new State(cost, newSoldiers, newOwners, deployNode, 0, 0, 0);
 			makePassiveMove(newState, graph);
 			ret.add(newState);
 
@@ -130,7 +181,7 @@ public class AStarAgent implements IAgent {
 						newSoldiers.set(from.getId(), soldiers - movedSoldiers);
 						newSoldiers.set(to.getId(), movedSoldiers);
 						newOwners.set(to.getId(), player);
-						newState = new State(cost - 1 + 1, newSoldiers, newOwners, deployNode, from.getId(), to.getId(),
+						newState = new State(cost - 1, newSoldiers, newOwners, deployNode, from.getId(), to.getId(),
 								cur.getSoldiers().get(to.getId()) + movedSoldiers);
 						if (!newState.gameOver())
 							makePassiveMove(newState, graph);
@@ -217,4 +268,5 @@ public class AStarAgent implements IAgent {
 		State ret = new State(cost, soldiers, ownerTypes, 0, 0, 0, 0);
 		return ret;
 	}
+
 }
