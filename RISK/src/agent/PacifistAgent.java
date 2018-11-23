@@ -63,10 +63,12 @@ public class PacifistAgent implements IAgent {
 
 	@Override
 	public INode deploy(IGraph graph, int soldiers) {
-		INode ret = graph.getContinents().get(0).getNodes().get(0);
+		INode ret = null;
 		for(IContinent continent : graph.getContinents()) {
 			for(INode node : continent.getNodes()) {
-				if(node.getSoldiers() < ret.getSoldiers()) {
+				if(node.getOwnerType() != player)
+					continue;
+				if( ret == null || (node.getSoldiers() < ret.getSoldiers())) {
 					ret = node;
 				} else if( (node.getSoldiers() == ret.getSoldiers()) 
 						&& (node.getNodeId() < ret.getNodeId())) {

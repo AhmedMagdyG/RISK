@@ -21,7 +21,7 @@ public class AggressiveAgent implements IAgent {
 
 	@Override
 	public AgentType getAgentType() {
-		return agentType;
+		return this.agentType;
 	}
 
 	@Override
@@ -84,10 +84,12 @@ public class AggressiveAgent implements IAgent {
 
 	@Override
 	public INode deploy(IGraph graph, int soldiers) {
-		INode ret = graph.getContinents().get(0).getNodes().get(0);
+		INode ret = null;
 		for (IContinent continent : graph.getContinents()) {
 			for (INode node : continent.getNodes()) {
-				if (node.getSoldiers() > ret.getSoldiers()) {
+				if(node.getOwnerType() != player)
+					continue;
+				if (ret == null || (node.getSoldiers() > ret.getSoldiers())) {
 					ret = node;
 				} else if ((node.getSoldiers() == ret.getSoldiers()) && (node.getNodeId() < ret.getNodeId())) {
 					ret = node;
@@ -99,7 +101,7 @@ public class AggressiveAgent implements IAgent {
 
 	@Override
 	public boolean getPlayer() {
-		return player;
+		return this.player;
 	}
 
 	@Override
@@ -113,7 +115,8 @@ public class AggressiveAgent implements IAgent {
 
 		List<IContinent> continents = graph.getContinents();
 		INode from = null, to = null;
-		int soldiers = 0, continentId = -1, continentBonus = -1;
+		int soldiers = 0;							//number of soldiers in attacked node.
+		int continentId = -1, continentBonus = -1;	//bonus continent states
 
 		for (IContinent continent : continents) {
 			for (INode node : continent.getNodes()) {
@@ -124,40 +127,38 @@ public class AggressiveAgent implements IAgent {
 							if (from == null) {
 								from = node;
 								to = neighbor;
-								soldiers = node.getSoldiers() - 1;
+								soldiers = neighbor.getSoldiers();
 								continentId = neighbor.getContinentId();
 								continentBonus = continents.get(continentId).getBouns();
 							} else {
 								if (neighbor.getContinentId() == continentId) {
-									if (neighbor.getSoldiers() > to.getSoldiers()) {
+									if (neighbor.getSoldiers() > soldiers) {
 										from = node;
 										to = neighbor;
-										soldiers = node.getSoldiers() - 1;
-									} else if ((neighbor.getSoldiers() == to.getSoldiers())
+										soldiers = neighbor.getSoldiers();
+									} else if ((neighbor.getSoldiers() == soldiers)
 											&& (neighbor.getNodeId() < to.getNodeId())) {
 										from = node;
 										to = neighbor;
-										soldiers = node.getSoldiers() - 1;
 									}
 								} else {
 									int newBonus = continents.get(neighbor.getContinentId()).getBouns();
 									if (newBonus > continentBonus) {
 										from = node;
 										to = neighbor;
-										soldiers = node.getSoldiers() - 1;
+										soldiers = neighbor.getSoldiers();
 										continentId = neighbor.getContinentId();
 										continentBonus = continents.get(continentId).getBouns();
 									} else if (newBonus == continentBonus) {
-										if (neighbor.getSoldiers() > to.getSoldiers()) {
+										if (neighbor.getSoldiers() > soldiers) {
 											from = node;
 											to = neighbor;
-											soldiers = node.getSoldiers() - 1;
+											soldiers = neighbor.getSoldiers();
 											continentId = neighbor.getContinentId();
-										} else if ((neighbor.getSoldiers() == to.getSoldiers())
+										} else if ((neighbor.getSoldiers() == soldiers)
 												&& (neighbor.getNodeId() < to.getNodeId())) {
 											from = node;
 											to = neighbor;
-											soldiers = node.getSoldiers() - 1;
 											continentId = neighbor.getContinentId();
 										}
 									}
@@ -168,9 +169,9 @@ public class AggressiveAgent implements IAgent {
 				}
 			}
 		}
-		if (from != null)
-			return new Attack(from, to, soldiers);
-		return null;
+		if (from == null)
+			return null;
+		return new Attack(from, to, from.getSoldiers()-1);
 	}
 
 }
