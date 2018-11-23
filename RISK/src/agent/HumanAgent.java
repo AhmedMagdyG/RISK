@@ -23,6 +23,11 @@ public class HumanAgent implements IAgent {
 	}
 
 	@Override
+	public void setLastTurnAttack(boolean lastTurnAttack) {
+		this.lastTurnAttack = lastTurnAttack;
+	}
+
+	@Override
 	public Attack attack(IGraph graph) {
 		// TODO Auto-generated method stub
 		return null;

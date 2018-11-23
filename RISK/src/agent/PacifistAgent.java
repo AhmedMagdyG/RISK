@@ -22,6 +22,11 @@ public class PacifistAgent implements IAgent {
 	}
 
 	@Override
+	public void setLastTurnAttack(boolean lastTurnAttack) {
+		this.lastTurnAttack = lastTurnAttack;
+	}
+
+	@Override
 	public Attack attack(IGraph graph) {
 		INode from = null, to = null;
 		int soldiers = -1;

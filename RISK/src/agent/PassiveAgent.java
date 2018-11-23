@@ -27,6 +27,11 @@ public class PassiveAgent implements IAgent {
 	}
 
 	@Override
+	public void setLastTurnAttack(boolean lastTurnAttack) {
+		this.lastTurnAttack = lastTurnAttack;
+	}
+
+	@Override
 	public INode deploy(IGraph graph, int soldiers) {
 		INode ret = null;
 		for (IContinent continent : graph.getContinents()) {

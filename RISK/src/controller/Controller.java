@@ -129,14 +129,14 @@ public class Controller extends JFrame implements IController {
 		String player1AgentTypeName = mainMenu.getPlayerOneName();
 		String player2AgentTypeName = mainMenu.getPlayerTwoName();
 
+		buildGraph();
+
 		AgentType player1AgentType = getStringMappingToAgentType(player1AgentTypeName);
 		AgentType player2AgentType = getStringMappingToAgentType(player2AgentTypeName);
 		initializeGamePlayers(player1AgentType, player2AgentType);
 
 		gameScreen.setPlayerOneLabel("White : " + player1AgentTypeName);
 		gameScreen.setPlayerTwoLabel("Black : " + player2AgentTypeName);
-
-		buildGraph();
 
 		if (player1.getAgentType() != AgentType.HUMAN)
 			gameScreen.setEnabledPlayerOne(false);
@@ -160,7 +160,7 @@ public class Controller extends JFrame implements IController {
 				gameScreen.setEnabledPlayerTwo(role);
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 			roleRunning = true;
@@ -177,7 +177,7 @@ public class Controller extends JFrame implements IController {
 				}
 			}
 		}
-		gameScreen.setLogMessage("Player " + String.valueOf(role ? 2 : 1) + " won!");
+		gameScreen.setLogMessage("Player " + String.valueOf(role ? 1 : 2) + " won!");
 		gameScreen.setEnabledPlayerOne(false);
 		gameScreen.setEnabledPlayerTwo(false);
 	}
@@ -218,9 +218,12 @@ public class Controller extends JFrame implements IController {
 	public void nonhumanAttack() {
 		Attack attackObject = curPlayer.attack(graph);
 		if (attackObject == null) {
+			curPlayer.setLastTurnAttack(false);
 			roleRunning = false;
 			return;
 		}
+		curPlayer.setLastTurnAttack(true);
+
 		int newFromSoldiers = attackObject.getFrom().getSoldiers() - attackObject.getSoldiers();
 		attackObject.getFrom().setSoldiers(newFromSoldiers);
 		int newToSoldiers = attackObject.getSoldiers() - attackObject.getTo().getSoldiers();

@@ -44,8 +44,7 @@ public class State {
 	}
 
 	public boolean equals(State s) {
-		return cost != s.getCost() && !soldiers.equals(s.getSoldiers()) && !nodeOwner.equals(s.getNodeOwner());
-
+		return cost == s.getCost() && soldiers.equals(s.getSoldiers()) && nodeOwner.equals(s.getNodeOwner());
 	}
 
 	public boolean gameOver() {

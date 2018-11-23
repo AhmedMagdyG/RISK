@@ -22,4 +22,6 @@ public interface IAgent {
 	public boolean getPlayer();
 
 	public boolean lastTurnAttack();
+
+	public void setLastTurnAttack(boolean lastTurnAttack);
 }

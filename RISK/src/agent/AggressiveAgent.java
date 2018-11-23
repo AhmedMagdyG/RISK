@@ -25,6 +25,11 @@ public class AggressiveAgent implements IAgent {
 	}
 
 	@Override
+	public void setLastTurnAttack(boolean lastTurnAttack) {
+		this.lastTurnAttack = lastTurnAttack;
+	}
+
+	@Override
 	public Attack attack(IGraph graph) {
 		// TODO - update last turn attack
 		List<IContinent> continents = graph.getContinents();
