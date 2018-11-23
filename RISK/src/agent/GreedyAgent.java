@@ -73,6 +73,9 @@ public class GreedyAgent implements IAgent {
 			State cur = frontier.getMin();
 			if (cur.gameOver()) {
 				buildPlayStrategy(cur, graph);
+				System.out.print("Greedy agent found a strategy in ");
+				System.out.print(deploySequence.size());
+				System.out.println(" steps.");
 				return;
 			}
 			visited.add(cur);
