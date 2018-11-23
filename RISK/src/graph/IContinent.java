@@ -1,12 +1,13 @@
 package graph;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface IContinent {
-	public List<INode> getNodes();
 	
-	public int getBouns();
+	public ArrayList<INode> getNodes();
 	
-	public int getContinentId();
+	public int getBonus();
+	
+	public String getColor();
 	
 }

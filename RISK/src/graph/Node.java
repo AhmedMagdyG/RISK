@@ -1,18 +1,40 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Node implements INode{
 	private boolean ownerType;
 	private int lastOccupied;
 	private int soldiers;
-	private int nodeId;
-	private int continentId;
-	private List<INode> neighbors;
+	private int id;
+	private List<INode> neighbours;
+	private IContinent continent;
 	
-	public Node(int nodeId, int continentId) {
-		this.nodeId = nodeId;
-		this.continentId = continentId;
+	public Node(int id) {
+		this.id = id;
+		this.neighbours = new ArrayList<INode>();
+	}
+	
+	public Node(int id, int soldiers) {
+		this.id = id;
+		this.soldiers = soldiers;
+		this.neighbours = new ArrayList<INode>();
+	}
+	
+	@Override
+	public IContinent getContinent() {
+		return continent;
+	}
+	
+	@Override
+	public void setContinent(IContinent continent) {
+		this.continent = continent;
+	}
+	
+	@Override
+	public void addNeighbour(INode node) {
+		neighbours.add(node);
 	}
 	
 	@Override
@@ -32,8 +54,8 @@ public class Node implements INode{
 		this.soldiers = soldiers;
 	}
 	@Override
-	public int getNodeId() {
-		return this.nodeId;
+	public int getId() {
+		return this.id;
 	}
 
 	@Override
@@ -47,15 +69,21 @@ public class Node implements INode{
 	}
 
 	@Override
-	public List<INode> getNeighbors() {
-		return this.neighbors;
+	public List<INode> getNeighbours() {
+		return this.neighbours;
 	}
 
 	@Override
-	public int getContinentId() {
-		return this.continentId;
+	public boolean isNeighbour(INode node) {
+		if(node == null)
+			return false;
+		
+		for(INode neighbour: neighbours) {
+			if(neighbour.getId() == node.getId())
+				return true;
+		}
+		return false;
 	}
-	
-	
+		
 	
 }

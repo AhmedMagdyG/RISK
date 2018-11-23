@@ -1,9 +1,17 @@
 package graph;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface IGraph {
 		
-	public List<IContinent> getContinents();
+	public ArrayList<INode> getNodes();
+
+	public ArrayList<IEdge> getEdges();
 	
+	public ArrayList<IContinent> getContinents();
+	
+	public int calculateBonus(boolean owner, boolean madeLastRoleAttack);
+
+	public INode getNodeById(int id);
+
 }

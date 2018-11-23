@@ -2,7 +2,7 @@ package controller;
 
 import graph.INode;
 
-public class Attack implements IAttack{
+public class Attack {
 	private INode from, to;
 	private int soldiers;
 
@@ -11,19 +11,17 @@ public class Attack implements IAttack{
 		this.to = to;
 		this.soldiers = soldiers;
 	}
-
-	@Override
+	
 	public INode getFrom() {
 		return from;
 	}
-
-	@Override
+	
 	public INode getTo() {
 		return to;
 	}
-
-	@Override
+	
 	public int getSoldiers() {
 		return soldiers;
 	}
+	
 }

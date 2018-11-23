@@ -1,31 +1,36 @@
 package graph;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Continent implements IContinent {
-	private List<INode> nodes;
-	private int bonus;
-	private int continentId;
 	
-	public Continent(List<INode> nodes, int bonus, int continentId) {
+	private ArrayList<INode> nodes;
+	private int bonus;
+	private String color;
+	
+	public Continent(ArrayList<INode> nodes, int bonus) {
 		this.nodes = nodes;
 		this.bonus = bonus;
-		this.continentId = continentId;
-	}
-
-	@Override
-	public List<INode> getNodes() {
-		return this.nodes;
-	}
-
-	@Override
-	public int getBouns() {
-		return this.bonus;
-	}
-
-	@Override
-	public int getContinentId() {
-		return this.continentId;
+		
+		Random random = new Random();
+		color = "rgb(" + String.valueOf(random.nextInt(256))
+			+ "," + String.valueOf(random.nextInt(256)) + "," + String.valueOf(random.nextInt(256)) +")";
 	}
 	
+	@Override
+	public ArrayList<INode> getNodes() {
+		return nodes;
+	}
+
+	@Override
+	public int getBonus() {
+		return bonus;
+	}
+
+	@Override
+	public String getColor() {
+		return color;
+	}
+
 }

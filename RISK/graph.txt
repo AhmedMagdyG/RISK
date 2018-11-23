@@ -1,0 +1,21 @@
+5 4
+0 1
+1 2
+2 3
+3 4
+2
+2 0 1 4
+3 2 3 4 6
+3 0 1 4
+2 2 3
+
+
+Format:
+n m
+ui vi
+p
+cnti uij bonusi
+p1 ui
+p2 ui
+
+0-indexed nodes and continents
