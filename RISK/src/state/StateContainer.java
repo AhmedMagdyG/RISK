@@ -1,20 +1,21 @@
 package state;
 
-import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.TreeMap;
 
 public class StateContainer {
 
-	private ArrayList<State> states;
+	private Queue<State> states;
+	private TreeMap<State, Integer> queueMap;
 
 	public StateContainer() {
-		states = new ArrayList<State>();
+		states = new PriorityQueue<State>();
+		queueMap = new TreeMap<State, Integer>();
 	}
 
 	public boolean exists(State s) {
-		for (State a : states)
-			if (a.equals(s))
-				return true;
-		return false;
+		return queueMap.containsKey(s);
 	}
 
 	public boolean isEmpty() {
@@ -22,28 +23,24 @@ public class StateContainer {
 	}
 
 	public void add(State s) {
-		states.add(s);
-	}
-
-	public void decreaseKey(State s, int cost) {
-		for (State a : states)
-			if (a.equals(s))
-				a.setCost(Math.min(a.getCost(), cost));
-		return;
+		if(exists(s)) {
+			Integer currVal = queueMap.get(s);
+			if(currVal > s.getCost()) {
+				queueMap.put(s, s.getCost());
+				states.add(s);
+			}
+		} else {
+			queueMap.put(s, s.getCost());
+			states.add(s);
+		}
 	}
 
 	public State getMin() {
-		if (states.isEmpty())
-			return null;
-		for (int i = 0; i < states.size() - 1; ++i)
-			if (states.get(i).getCost() < states.get(states.size() - 1).getCost()) {
-				State cur = states.get(i);
-				State last = states.get(states.size() - 1);
-				states.set(i, last);
-				states.set(states.size() - 1, cur);
-			}
-		State last = states.get(states.size() - 1);
-		states.remove(states.size() - 1);
-		return last;
+		while(!states.isEmpty()) {
+			State s = states.remove();
+			if(s.getCost() == queueMap.get(s))
+				return s;
+		}
+		return null;
 	}
 }
