@@ -8,10 +8,12 @@ public class Continent implements IContinent {
 	private ArrayList<INode> nodes;
 	private int bonus;
 	private String color;
+	private int id;
 	
-	public Continent(ArrayList<INode> nodes, int bonus) {
+	public Continent(ArrayList<INode> nodes, int bonus, int id) {
 		this.nodes = nodes;
 		this.bonus = bonus;
+		this.id = id;
 		
 		Random random = new Random();
 		color = "rgb(" + String.valueOf(random.nextInt(256))
@@ -31,6 +33,11 @@ public class Continent implements IContinent {
 	@Override
 	public String getColor() {
 		return color;
+	}
+
+	@Override
+	public int getContinentId() {
+		return this.id;
 	}
 
 }

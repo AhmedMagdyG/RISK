@@ -36,7 +36,7 @@ public class PassiveAgent implements IAgent {
 				if(ret == null || (node.getSoldiers() < ret.getSoldiers())) {
 					ret = node;
 				} else if( (node.getSoldiers() == ret.getSoldiers()) 
-						&& (node.getNodeId() < ret.getNodeId())) {
+						&& (node.getId() < ret.getId())) {
 					ret = node;
 				}
 			}

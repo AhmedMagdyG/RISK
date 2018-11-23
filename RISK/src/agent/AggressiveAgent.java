@@ -50,7 +50,7 @@ public class AggressiveAgent implements IAgent {
 		for (IContinent continent : graph.getContinents()) {
 			for (INode node : continent.getNodes()) {
 				if (node.getOwnerType() == player) {
-					for (INode neighbor : node.getNeighbors()) {
+					for (INode neighbor : node.getNeighbours()) {
 						if (neighbor.getOwnerType() != player) {
 							if (node.getSoldiers() - neighbor.getSoldiers() > 1) {
 								if (from == null) {
@@ -63,7 +63,7 @@ public class AggressiveAgent implements IAgent {
 										to = neighbor;
 										soldiers = neighbor.getSoldiers();
 									} else if ((neighbor.getSoldiers() == soldiers)
-											&& (neighbor.getNodeId() < to.getNodeId())) {
+											&& (neighbor.getId() < to.getId())) {
 										from = node;
 										to = neighbor;
 									}
@@ -91,7 +91,7 @@ public class AggressiveAgent implements IAgent {
 					continue;
 				if (ret == null || (node.getSoldiers() > ret.getSoldiers())) {
 					ret = node;
-				} else if ((node.getSoldiers() == ret.getSoldiers()) && (node.getNodeId() < ret.getNodeId())) {
+				} else if ((node.getSoldiers() == ret.getSoldiers()) && (node.getId() < ret.getId())) {
 					ret = node;
 				}
 			}
@@ -121,45 +121,45 @@ public class AggressiveAgent implements IAgent {
 		for (IContinent continent : continents) {
 			for (INode node : continent.getNodes()) {
 				if (node.getOwnerType() == player) {
-					for (INode neighbor : node.getNeighbors()) {
-						if ((neighbor.getOwnerType() != player) && enemyContinents.contains(neighbor.getContinentId())
+					for (INode neighbor : node.getNeighbours()) {
+						if ((neighbor.getOwnerType() != player) && enemyContinents.contains(neighbor.getContinent().getContinentId())
 								&& (node.getSoldiers() - neighbor.getSoldiers() > 1)) {
 							if (from == null) {
 								from = node;
 								to = neighbor;
 								soldiers = neighbor.getSoldiers();
-								continentId = neighbor.getContinentId();
-								continentBonus = continents.get(continentId).getBouns();
+								continentId = neighbor.getContinent().getContinentId();
+								continentBonus = continents.get(continentId).getBonus();
 							} else {
-								if (neighbor.getContinentId() == continentId) {
+								if (neighbor.getContinent().getContinentId() == continentId) {
 									if (neighbor.getSoldiers() > soldiers) {
 										from = node;
 										to = neighbor;
 										soldiers = neighbor.getSoldiers();
 									} else if ((neighbor.getSoldiers() == soldiers)
-											&& (neighbor.getNodeId() < to.getNodeId())) {
+											&& (neighbor.getId() < to.getId())) {
 										from = node;
 										to = neighbor;
 									}
 								} else {
-									int newBonus = continents.get(neighbor.getContinentId()).getBouns();
+									int newBonus = continents.get(neighbor.getContinent().getContinentId()).getBonus();
 									if (newBonus > continentBonus) {
 										from = node;
 										to = neighbor;
 										soldiers = neighbor.getSoldiers();
-										continentId = neighbor.getContinentId();
-										continentBonus = continents.get(continentId).getBouns();
+										continentId = neighbor.getContinent().getContinentId();
+										continentBonus = continents.get(continentId).getBonus();
 									} else if (newBonus == continentBonus) {
 										if (neighbor.getSoldiers() > soldiers) {
 											from = node;
 											to = neighbor;
 											soldiers = neighbor.getSoldiers();
-											continentId = neighbor.getContinentId();
+											continentId = neighbor.getContinent().getContinentId();
 										} else if ((neighbor.getSoldiers() == soldiers)
-												&& (neighbor.getNodeId() < to.getNodeId())) {
+												&& (neighbor.getId() < to.getId())) {
 											from = node;
 											to = neighbor;
-											continentId = neighbor.getContinentId();
+											continentId = neighbor.getContinent().getContinentId();
 										}
 									}
 								}

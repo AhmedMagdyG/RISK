@@ -29,7 +29,7 @@ public class PacifistAgent implements IAgent {
 		for(IContinent continent : graph.getContinents()) {
 			for(INode node: continent.getNodes()) {
 				if(node.getOwnerType() == player) {
-					for(INode neighbor: node.getNeighbors()) {
+					for(INode neighbor: node.getNeighbours()) {
 						if(neighbor.getOwnerType() == !player) {
 							if(node.getSoldiers() - neighbor.getSoldiers() > 1) {
 								if(from == null) {
@@ -42,7 +42,7 @@ public class PacifistAgent implements IAgent {
 										to = neighbor;
 										soldiers = neighbor.getSoldiers()+1;
 									} else if ((neighbor.getSoldiers() + 1 == soldiers)
-											&& (neighbor.getNodeId() < to.getNodeId())) {
+											&& (neighbor.getId() < to.getId())) {
 										from = node;
 										to = neighbor;
 									}
@@ -71,7 +71,7 @@ public class PacifistAgent implements IAgent {
 				if( ret == null || (node.getSoldiers() < ret.getSoldiers())) {
 					ret = node;
 				} else if( (node.getSoldiers() == ret.getSoldiers()) 
-						&& (node.getNodeId() < ret.getNodeId())) {
+						&& (node.getId() < ret.getId())) {
 					ret = node;
 				}
 			}
