@@ -79,6 +79,11 @@ public class Graph implements IGraph{
 	@Override
 	public int calculateBonus(boolean owner, boolean madeLastRoleAttack) {
 		int bonus = madeLastRoleAttack ? 2: 0;
+		int numberOfOwenedNodes = 0;
+		for(INode node: nodes) if(node.getOwnerType() == owner)
+			++numberOfOwenedNodes;
+		
+		bonus += Math.max(3, numberOfOwenedNodes/3);
 		
 		for(IContinent continent: continents) {
 			boolean hasContinent = true;
@@ -92,6 +97,7 @@ public class Graph implements IGraph{
 				bonus += continent.getBonus();
 			
 		}
+		
 		
 		return bonus;
 	}

@@ -36,7 +36,6 @@ public class Controller extends JFrame implements IController {
 	private boolean gameRunning, roleRunning;
 
 	// remainging agents
-	// "Nearly Pacifist",
 	// "Greedy", "A*", "Real-time A*"
 	private AgentType getStringMappingToAgentType(String agentType) {
 		switch (agentType) {
@@ -46,6 +45,14 @@ public class Controller extends JFrame implements IController {
 			return AgentType.PASSIVE;
 		case "Aggressive":
 			return AgentType.AGGRESSIVE;
+		case "Nearly Pacifist":
+			return AgentType.PACIFIST;
+		case "Greedy":
+			return AgentType.GREEDY;
+		case "A*":
+			return AgentType.A_STAR;
+		case "Real-time A*":
+			return AgentType.RTA_STAR;
 		default:
 			return null;
 		}
