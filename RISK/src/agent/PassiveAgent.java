@@ -10,7 +10,7 @@ public class PassiveAgent implements IAgent {
 	private boolean player;
 	private boolean lastTurnAttack;
 
-	public PassiveAgent(AgentType agentType, boolean player) {
+	public PassiveAgent(AgentType agentType, boolean player, IGraph graph) {
 		this.agentType = agentType;
 		this.player = player;
 		this.lastTurnAttack = false;

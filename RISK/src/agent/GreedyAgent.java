@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import controller.Attack;
+import graph.IContinent;
 import graph.IGraph;
 import graph.INode;
 import state.State;
@@ -59,7 +60,10 @@ public class GreedyAgent implements IAgent {
 	private void preprocess(IGraph graph) {
 		StateContainer frontier = new StateContainer();
 		StateContainer visited = new StateContainer();
-		frontier.add(getInitialState(graph));
+		State initialState = getInitialState(graph);
+		if (player)
+			makePassiveMove(initialState, graph);
+		frontier.add(initialState);
 		while (!frontier.isEmpty()) {
 			State cur = frontier.getMin();
 			if (cur.gameOver()) {
@@ -81,6 +85,7 @@ public class GreedyAgent implements IAgent {
 	}
 
 	// Makes 2 moves, one for greedy and one for passive
+	@SuppressWarnings("unchecked")
 	private ArrayList<State> getNeighbours(State cur, IGraph graph) {
 		ArrayList<Integer> p1Nodes = new ArrayList<Integer>();
 		for (int i = 0; i < cur.getNodeOwner().size(); ++i)
@@ -100,6 +105,7 @@ public class GreedyAgent implements IAgent {
 			ArrayList<Boolean> newOwners = (ArrayList<Boolean>) cur.getNodeOwner().clone();
 			newSoldiers.set(deployNode, newSoldiers.get(deployNode) + bonus);
 			State newState = new State(cost, newSoldiers, newOwners, deployNode, 0, 0, 0);
+			makePassiveMove(newState, graph);
 			ret.add(newState);
 
 			// Attack
@@ -108,10 +114,22 @@ public class GreedyAgent implements IAgent {
 				for (INode to : from.getNeighbours()) {
 					if (from.getOwnerType() == to.getOwnerType())
 						continue;
-					if (from.getSoldiers() - to.getSoldiers() <= 1)
+					int soldiers = from.getSoldiers() - to.getSoldiers();
+					if (from.getId() == deployNode)
+						soldiers += bonus;
+					if (soldiers <= 1)
 						continue;
-					for (int soldiers = 1; soldiers < from.getSoldiers() - to.getSoldiers(); ++soldiers) {
-						// TODO
+					for (int movedSoldiers = 1; movedSoldiers < soldiers; ++movedSoldiers) {
+						newSoldiers = (ArrayList<Integer>) cur.getSoldiers().clone();
+						newOwners = (ArrayList<Boolean>) cur.getNodeOwner().clone();
+						newSoldiers.set(deployNode, newSoldiers.get(deployNode) + bonus);
+						newSoldiers.set(from.getId(), newSoldiers.get(from.getId()) - movedSoldiers);
+						newSoldiers.set(to.getId(), movedSoldiers);
+						newOwners.set(to.getId(), player);
+						newState = new State(cost - 1, newSoldiers, newOwners, deployNode, from.getId(), to.getId(),
+								to.getSoldiers() + movedSoldiers);
+						makePassiveMove(newState, graph);
+						ret.add(newState);
 					}
 				}
 			}
@@ -119,9 +137,40 @@ public class GreedyAgent implements IAgent {
 		return ret;
 	}
 
-	private int getContinentBonus(ArrayList<Integer> p1Nodes, IGraph graph) {
-		// TODO Auto-generated method stub
-		return 0;
+	private void makePassiveMove(State cur, IGraph graph) {
+		ArrayList<Integer> p2Nodes = new ArrayList<Integer>();
+		for (int i = 0; i < cur.getNodeOwner().size(); ++i)
+			if (!cur.getNodeOwner().get(i))
+				p2Nodes.add(i);
+
+		int bonus = Math.max(3, p2Nodes.size() / 3) + getContinentBonus(p2Nodes, graph);
+		if (cur.getLastAttackSoldiers() > 0)
+			bonus += 2;
+
+		int deployIndex = p2Nodes.get(0);
+		int min = graph.getNodeById(deployIndex).getSoldiers();
+		for (int i : p2Nodes)
+			if (min > graph.getNodeById(i).getSoldiers()) {
+				min = graph.getNodeById(i).getSoldiers();
+				deployIndex = i;
+			} else if (min == graph.getNodeById(i).getSoldiers() && i < deployIndex)
+				deployIndex = i;
+		cur.getSoldiers().set(deployIndex, cur.getSoldiers().get(deployIndex) + bonus);
+	}
+
+	private int getContinentBonus(ArrayList<Integer> nodes, IGraph graph) {
+		int ret = 0;
+		for (IContinent continent : graph.getContinents()) {
+			boolean owned = true;
+			for (INode node : continent.getNodes())
+				if (!nodes.contains(node.getId())) {
+					owned = false;
+					break;
+				}
+			if (owned)
+				ret += continent.getBonus();
+		}
+		return ret;
 	}
 
 	private void buildPlayStrategy(State lastState, IGraph graph) {
