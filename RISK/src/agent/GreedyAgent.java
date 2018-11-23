@@ -68,7 +68,7 @@ public class GreedyAgent implements IAgent {
 			}
 			visited.add(cur);
 
-			ArrayList<State> neighbours = getNeighbours(cur);
+			ArrayList<State> neighbours = getNeighbours(cur, graph);
 			for (State s : neighbours)
 				if (!frontier.exists(s) && !visited.exists(s)) {
 					s.setParent(cur);
@@ -81,9 +81,47 @@ public class GreedyAgent implements IAgent {
 	}
 
 	// Makes 2 moves, one for greedy and one for passive
-	private ArrayList<State> getNeighbours(State cur) {
+	private ArrayList<State> getNeighbours(State cur, IGraph graph) {
+		ArrayList<Integer> p1Nodes = new ArrayList<Integer>();
+		for (int i = 0; i < cur.getNodeOwner().size(); ++i)
+			if (!cur.getNodeOwner().get(i))
+				p1Nodes.add(i);
+
+		int bonus = Math.max(3, p1Nodes.size() / 3) + getContinentBonus(p1Nodes, graph);
+		if (cur.getLastAttackSoldiers() > 0)
+			bonus += 2;
+
+		int cost = graph.getNodes().size() - p1Nodes.size();
+
+		ArrayList<State> ret = new ArrayList<State>();
+		for (int deployNode = 0; deployNode < graph.getNodes().size(); ++deployNode) {
+			// Skip Attack
+			ArrayList<Integer> newSoldiers = (ArrayList<Integer>) cur.getSoldiers().clone();
+			ArrayList<Boolean> newOwners = (ArrayList<Boolean>) cur.getNodeOwner().clone();
+			newSoldiers.set(deployNode, newSoldiers.get(deployNode) + bonus);
+			State newState = new State(cost, newSoldiers, newOwners, deployNode, 0, 0, 0);
+			ret.add(newState);
+
+			// Attack
+			for (int i : p1Nodes) {
+				INode from = graph.getNodeById(i);
+				for (INode to : from.getNeighbours()) {
+					if (from.getOwnerType() == to.getOwnerType())
+						continue;
+					if (from.getSoldiers() - to.getSoldiers() <= 1)
+						continue;
+					for (int soldiers = 1; soldiers < from.getSoldiers() - to.getSoldiers(); ++soldiers) {
+						// TODO
+					}
+				}
+			}
+		}
+		return ret;
+	}
+
+	private int getContinentBonus(ArrayList<Integer> p1Nodes, IGraph graph) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	private void buildPlayStrategy(State lastState, IGraph graph) {
