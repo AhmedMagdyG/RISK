@@ -131,6 +131,12 @@ public class Controller extends JFrame implements IController {
 
 		buildGraph();
 
+		if(player1.getAgentType() != AgentType.HUMAN)
+			gameScreen.setEnabledPlayerOne(false);
+
+		if(player2.getAgentType() != AgentType.HUMAN)
+			gameScreen.setEnabledPlayerTwo(false);
+		
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
 	}
@@ -140,14 +146,23 @@ public class Controller extends JFrame implements IController {
 		boolean role;
 		for (role = false; !checkGameOver(); role ^= true) {
 			curPlayer = role ? player2 : player1;
-			gameScreen.setEnabledPlayerOne(!role);
-			gameScreen.setEnabledPlayerTwo(role);
+			
+			if(player1.getAgentType() == AgentType.HUMAN)
+				gameScreen.setEnabledPlayerOne(!role);
+			if(player2.getAgentType() == AgentType.HUMAN)
+				gameScreen.setEnabledPlayerTwo(role);
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+			roleRunning = true;
 			if(curPlayer.getAgentType() != AgentType.HUMAN) {
 				nonhumanDistributeBonus();
 				nonhumanAttack();
 			}
 			
-			while(!roleRunning) {
+			while(roleRunning) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -195,15 +210,28 @@ public class Controller extends JFrame implements IController {
 	@Override
 	public void nonhumanAttack() {
 		Attack attackObject = curPlayer.attack(graph);
-		if (attackObject == null)
+		if (attackObject == null) {
+			roleRunning = false;
 			return;
+		}
 		int newFromSoldiers = attackObject.getFrom().getSoldiers() - attackObject.getSoldiers();
 		attackObject.getFrom().setSoldiers(newFromSoldiers);
 		int newToSoldiers = attackObject.getSoldiers() - attackObject.getTo().getSoldiers();
 		attackObject.getTo().setSoldiers(newToSoldiers);
-		attackObject.getTo().setOwnerType(curPlayer.getPlayer());
-		// set view values
-
+		attackObject.getTo().setOwnerType(curPlayer.getPlayer());		
+		
+		String playerColor = attackObject.getFrom().getOwnerType() ? "black" : "white";
+		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getFrom().getId()), 
+									 attackObject.getFrom().getContinent().getColor(), 
+									 playerColor, 
+									 attackObject.getFrom().getSoldiers());
+		
+		
+		playerColor = attackObject.getTo().getOwnerType() ? "black" : "white";
+		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getTo().getId()), 
+									 attackObject.getTo().getContinent().getColor(), 
+									 playerColor, 
+									 attackObject.getTo().getSoldiers());
 		roleRunning = false;
 	}
 
@@ -227,14 +255,14 @@ public class Controller extends JFrame implements IController {
 		node.setSoldiers(node.getSoldiers() + bonus);
 		String playerColor = node.getOwnerType() ? "black" : "white";
 		gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor,
-				node.getSoldiers());
+					node.getSoldiers());
 	}
 
 	@Override
 	public void humanDistributeBonus() {
-		gameScreen.setLogMessage("Select node to add bonus on.");
 		// get bonus node
 		int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
+		gameScreen.setLogMessage("Select node to deploy" + String.valueOf(bonus) + " on.");
 		// add bonus on this node
 	}
 
