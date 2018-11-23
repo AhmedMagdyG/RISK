@@ -98,8 +98,8 @@ public class Controller extends JFrame implements IController {
 	}
 
 	private void initializeGamePlayers(AgentType player1AgentType, AgentType player2AgentType) {
-		player1 = AgentFactory.getInstance().getAgent(player1AgentType, PLAYER1_ID);
-		player2 = AgentFactory.getInstance().getAgent(player2AgentType, PLAYER2_ID);
+		player1 = AgentFactory.getInstance().getAgent(player1AgentType, PLAYER1_ID, graph);
+		player2 = AgentFactory.getInstance().getAgent(player2AgentType, PLAYER2_ID, graph);
 	}
 
 	private void buildGraph() {
@@ -131,12 +131,12 @@ public class Controller extends JFrame implements IController {
 
 		buildGraph();
 
-		if(player1.getAgentType() != AgentType.HUMAN)
+		if (player1.getAgentType() != AgentType.HUMAN)
 			gameScreen.setEnabledPlayerOne(false);
 
-		if(player2.getAgentType() != AgentType.HUMAN)
+		if (player2.getAgentType() != AgentType.HUMAN)
 			gameScreen.setEnabledPlayerTwo(false);
-		
+
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
 	}
@@ -146,23 +146,23 @@ public class Controller extends JFrame implements IController {
 		boolean role;
 		for (role = false; !checkGameOver(); role ^= true) {
 			curPlayer = role ? player2 : player1;
-			
-			if(player1.getAgentType() == AgentType.HUMAN)
+
+			if (player1.getAgentType() == AgentType.HUMAN)
 				gameScreen.setEnabledPlayerOne(!role);
-			if(player2.getAgentType() == AgentType.HUMAN)
+			if (player2.getAgentType() == AgentType.HUMAN)
 				gameScreen.setEnabledPlayerTwo(role);
-			
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 			}
 			roleRunning = true;
-			if(curPlayer.getAgentType() != AgentType.HUMAN) {
+			if (curPlayer.getAgentType() != AgentType.HUMAN) {
 				nonhumanDistributeBonus();
 				nonhumanAttack();
 			}
-			
-			while(roleRunning) {
+
+			while (roleRunning) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -187,10 +187,10 @@ public class Controller extends JFrame implements IController {
 		gameScreen.setLogMessage("Select attacker node.");
 		// get fromId
 		// gameScreen.setLogMessage("Select node to attack.");
-		//get toId
+		// get toId
 		// gameScreen.setLogMessage("Enter number of soldiers.");
 		// get soldiers
-		
+
 		INode from = graph.getNodeById(fromId), to = graph.getNodeById(toId);
 		if (from == null || to == null)
 			return false;
@@ -218,20 +218,15 @@ public class Controller extends JFrame implements IController {
 		attackObject.getFrom().setSoldiers(newFromSoldiers);
 		int newToSoldiers = attackObject.getSoldiers() - attackObject.getTo().getSoldiers();
 		attackObject.getTo().setSoldiers(newToSoldiers);
-		attackObject.getTo().setOwnerType(curPlayer.getPlayer());		
-		
+		attackObject.getTo().setOwnerType(curPlayer.getPlayer());
+
 		String playerColor = attackObject.getFrom().getOwnerType() ? "black" : "white";
-		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getFrom().getId()), 
-									 attackObject.getFrom().getContinent().getColor(), 
-									 playerColor, 
-									 attackObject.getFrom().getSoldiers());
-		
-		
+		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getFrom().getId()),
+				attackObject.getFrom().getContinent().getColor(), playerColor, attackObject.getFrom().getSoldiers());
+
 		playerColor = attackObject.getTo().getOwnerType() ? "black" : "white";
-		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getTo().getId()), 
-									 attackObject.getTo().getContinent().getColor(), 
-									 playerColor, 
-									 attackObject.getTo().getSoldiers());
+		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getTo().getId()),
+				attackObject.getTo().getContinent().getColor(), playerColor, attackObject.getTo().getSoldiers());
 		roleRunning = false;
 	}
 
@@ -255,7 +250,7 @@ public class Controller extends JFrame implements IController {
 		node.setSoldiers(node.getSoldiers() + bonus);
 		String playerColor = node.getOwnerType() ? "black" : "white";
 		gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor,
-					node.getSoldiers());
+				node.getSoldiers());
 	}
 
 	@Override

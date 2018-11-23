@@ -4,20 +4,19 @@ import controller.Attack;
 import graph.IGraph;
 import graph.INode;
 
-public class HumanAgent implements IAgent{
+public class HumanAgent implements IAgent {
 
 	private AgentType agentType;
 	private boolean player;
 	private boolean lastTurnAttack;
-	
-	public HumanAgent(AgentType agentType, boolean player) {
+
+	public HumanAgent(AgentType agentType, boolean player, IGraph graph) {
 		this.agentType = agentType;
 		this.player = player;
 		this.lastTurnAttack = false;
-		
+
 	}
-	
-	
+
 	@Override
 	public AgentType getAgentType() {
 		return agentType;

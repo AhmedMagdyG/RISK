@@ -13,7 +13,7 @@ public class AggressiveAgent implements IAgent {
 	private boolean player;
 	private boolean lastTurnAttack;
 
-	public AggressiveAgent(AgentType agentType, boolean player) {
+	public AggressiveAgent(AgentType agentType, boolean player, IGraph graph) {
 		this.agentType = agentType;
 		this.player = player;
 		this.lastTurnAttack = false;
@@ -87,7 +87,7 @@ public class AggressiveAgent implements IAgent {
 		INode ret = null;
 		for (IContinent continent : graph.getContinents()) {
 			for (INode node : continent.getNodes()) {
-				if(node.getOwnerType() != player)
+				if (node.getOwnerType() != player)
 					continue;
 				if (ret == null || (node.getSoldiers() > ret.getSoldiers())) {
 					ret = node;
@@ -115,14 +115,15 @@ public class AggressiveAgent implements IAgent {
 
 		List<IContinent> continents = graph.getContinents();
 		INode from = null, to = null;
-		int soldiers = 0;							//number of soldiers in attacked node.
-		int continentId = -1, continentBonus = -1;	//bonus continent states
+		int soldiers = 0; // number of soldiers in attacked node.
+		int continentId = -1, continentBonus = -1; // bonus continent states
 
 		for (IContinent continent : continents) {
 			for (INode node : continent.getNodes()) {
 				if (node.getOwnerType() == player) {
 					for (INode neighbor : node.getNeighbours()) {
-						if ((neighbor.getOwnerType() != player) && enemyContinents.contains(neighbor.getContinent().getContinentId())
+						if ((neighbor.getOwnerType() != player)
+								&& enemyContinents.contains(neighbor.getContinent().getContinentId())
 								&& (node.getSoldiers() - neighbor.getSoldiers() > 1)) {
 							if (from == null) {
 								from = node;
@@ -171,7 +172,7 @@ public class AggressiveAgent implements IAgent {
 		}
 		if (from == null)
 			return null;
-		return new Attack(from, to, from.getSoldiers()-1);
+		return new Attack(from, to, from.getSoldiers() - 1);
 	}
 
 }
