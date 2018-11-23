@@ -82,13 +82,10 @@ public class AStarAgent implements IAgent {
 
 			ArrayList<State> neighbours = getNeighbours(cur, graph);
 			for (State s : neighbours)
-				if (!frontier.exists(s) && !visited.exists(s)) {
+				if (!visited.exists(s)) {
 					s.setParent(cur);
 					frontier.add(s);
 				}
-			// This is useless in greedy with this heuristic (number of enemy nodes)
-			// else if(frontier.exists(s))
-			// frontier.decreaseKey(s, s.getCost());
 		}
 	}
 
