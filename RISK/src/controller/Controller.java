@@ -146,6 +146,7 @@ public class Controller extends JFrame implements IController {
 				nonhumanDistributeBonus();
 				nonhumanAttack();
 			}
+			
 			while(!roleRunning) {
 				try {
 					Thread.sleep(1000);
@@ -161,14 +162,20 @@ public class Controller extends JFrame implements IController {
 
 	@Override
 	public void skipAttack() {
-		// hide input fields
+		// hide input fields or end waiting for user click
 		roleRunning = false;
 	}
 
 	@Override
 	public boolean humanAttack() {
 		int fromId = 0, toId = 0, soldiers = 0; // show input fields and read data
-
+		gameScreen.setLogMessage("Select attacker node.");
+		// get fromId
+		// gameScreen.setLogMessage("Select node to attack.");
+		//get toId
+		// gameScreen.setLogMessage("Enter number of soldiers.");
+		// get soldiers
+		
 		INode from = graph.getNodeById(fromId), to = graph.getNodeById(toId);
 		if (from == null || to == null)
 			return false;
@@ -225,8 +232,10 @@ public class Controller extends JFrame implements IController {
 
 	@Override
 	public void humanDistributeBonus() {
-		// show fields
+		gameScreen.setLogMessage("Select node to add bonus on.");
+		// get bonus node
 		int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
+		// add bonus on this node
 	}
 
 	@Override
