@@ -77,8 +77,10 @@ public class RTAStarAgent implements IAgent{
 			while (!frontier.isEmpty()) {
 				State cur = frontier.getMin();
 				
-				if(cur.getCost() < bestState.getCost())
-					bestState = cur;
+				if(cur.getCost() > bestState.getCost())
+					continue;
+				
+				bestState = cur;
 				if (cur.gameOver()) 
 					continue;
 				
@@ -102,7 +104,7 @@ public class RTAStarAgent implements IAgent{
 			return false;
 		if(cur.gameOver()) {
 			buildPlayStrategy(cur, graph);
-			System.out.print("Greedy agent found a strategy in ");
+			System.out.print("RTA* agent found a strategy in ");
 			System.out.print(deploySequence.size());
 			System.out.println(" steps.");
 			return true;
@@ -270,3 +272,5 @@ public class RTAStarAgent implements IAgent{
 	}
 
 }
+
+//https://pastebin.com/gJwLES7t
