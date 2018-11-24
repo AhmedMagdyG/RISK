@@ -9,73 +9,75 @@ import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
 
+import controller.IController;
+
 public class GraphListener implements ViewerListener, MouseInputListener {
-	
+
 	private ViewerPipe fromViewer;
-	private boolean listening;
-	
-	public GraphListener(Graph graph, Viewer viewer) {
+	private IController controller;
+
+	public GraphListener(Graph graph, Viewer viewer, IController controller) {
 		fromViewer = viewer.newViewerPipe();
 		fromViewer.addViewerListener(this);
 		fromViewer.addSink(graph);
-		listening = false;
-	}
-	
-	public void setListening(boolean listening) {
-		this.listening = listening;
+		this.controller = controller;
 	}
 
+	public void setListening(boolean listening) {
+	}
+
+	@Override
 	public void viewClosed(String id) {
 	}
 
+	@Override
 	public void buttonPushed(String id) {
-		if(listening) {
-			// TODO : modify attack object
-		}
+		controller.nodePressed(id);
 	}
 
+	@Override
 	public void buttonReleased(String id) {
 
 	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		fromViewer.pump();
 	}
-	
+
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

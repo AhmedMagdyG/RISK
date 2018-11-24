@@ -33,10 +33,16 @@ public class Controller extends JFrame implements IController {
 	private MainMenu mainMenu;
 	private GameScreen gameScreen;
 
-	private boolean gameRunning, roleRunning;
+	private boolean gameRunning;
 
-	// remainging agents
-	// "Greedy", "A*", "Real-time A*"
+	private boolean waitForDeploy;
+	private String deployNodeId;
+
+	private int waitForAttack;
+	private String attackFrom, attackTo;
+
+	private boolean waitForSkip;
+
 	private AgentType getStringMappingToAgentType(String agentType) {
 		switch (agentType) {
 		case "Human":
@@ -78,7 +84,7 @@ public class Controller extends JFrame implements IController {
 		setVisible(true);
 
 		showMainMenu();
-		gamePlay();
+		gameLoop();
 	}
 
 	@Override
@@ -138,80 +144,97 @@ public class Controller extends JFrame implements IController {
 		gameScreen.setPlayerOneLabel("White : " + player1AgentTypeName);
 		gameScreen.setPlayerTwoLabel("Black : " + player2AgentTypeName);
 
-		if (player1.getAgentType() != AgentType.HUMAN)
-			gameScreen.setEnabledPlayerOne(false);
-
-		if (player2.getAgentType() != AgentType.HUMAN)
-			gameScreen.setEnabledPlayerTwo(false);
-
 		cardLayout.show(cardPanel, GAME_SCREEN);
 		gameRunning = true;
 	}
 
 	@Override
-	public void gamePlay() {
+	public void gameLoop() {
+		gameScreen.setSkipEnabled(false);
+
 		boolean role;
 		for (role = false; !checkGameOver(); role ^= true) {
 			curPlayer = role ? player2 : player1;
 
-			if (player1.getAgentType() == AgentType.HUMAN)
-				gameScreen.setEnabledPlayerOne(!role);
-			if (player2.getAgentType() == AgentType.HUMAN)
-				gameScreen.setEnabledPlayerTwo(role);
+			if (curPlayer.getAgentType() == AgentType.HUMAN) {
+				gameScreen.setSkipEnabled(true);
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-			roleRunning = true;
-			if (curPlayer.getAgentType() != AgentType.HUMAN) {
+				humanDistributeBonus();
+				humanAttack();
+			} else {
+				delay(1000);
+
 				nonhumanDistributeBonus();
 				nonhumanAttack();
 			}
 
-			while (roleRunning) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+			if (curPlayer.getAgentType() == AgentType.HUMAN)
+				gameScreen.setSkipEnabled(false);
 		}
-		gameScreen.setLogMessage("Player " + String.valueOf(role ? 1 : 2) + " won!");
-		gameScreen.setEnabledPlayerOne(false);
-		gameScreen.setEnabledPlayerTwo(false);
+		gameScreen.setLogMessage("Player " + String.valueOf(role ? 1 : 2) + " won !");
+		gameScreen.setSkipEnabled(false);
+	}
+
+	private void delay(int t) {
+		try {
+			Thread.sleep(t);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	@Override
 	public void skipAttack() {
-		// hide input fields or end waiting for user click
-		roleRunning = false;
+		waitForSkip = false;
 	}
 
 	@Override
-	public boolean humanAttack() {
-		int fromId = 0, toId = 0, soldiers = 0; // show input fields and read data
-		gameScreen.setLogMessage("Select attacker node.");
-		// get fromId
-		// gameScreen.setLogMessage("Select node to attack.");
-		// get toId
-		// gameScreen.setLogMessage("Enter number of soldiers.");
-		// get soldiers
+	public void humanAttack() {
+		while (true) {
+			gameScreen.setLogMessage("Select the attacking node then the attacked one, or press skip.");
 
-		INode from = graph.getNodeById(fromId), to = graph.getNodeById(toId);
-		if (from == null || to == null)
-			return false;
+			waitForSkip = true;
+			waitForAttack = 0;
+			while (waitForSkip && (waitForAttack < 2))
+				delay(100);
 
-		if (!from.isNeighbour(to))
-			return false;
+			if (!waitForSkip)
+				break;
 
-		if (from.getSoldiers() <= soldiers || soldiers <= to.getSoldiers())
-			return false;
-		from.setSoldiers(from.getSoldiers() - soldiers);
-		to.setSoldiers(soldiers - to.getSoldiers());
+			INode from = graph.getNodeById(Integer.parseInt(attackFrom));
+			INode to = graph.getNodeById(Integer.parseInt(attackTo));
 
-		roleRunning = false;
-		return true;
+			if (from.getOwnerType() != curPlayer.getPlayer() || to.getOwnerType() == curPlayer.getPlayer()) {
+				gameScreen.setLogMessage("You must attack an enemy node by one of your nodes.");
+				delay(1000);
+				continue;
+			}
+
+			if (!from.isNeighbour(to)) {
+				gameScreen.setLogMessage("The two nodes must be directly connected by an edge.");
+				delay(1000);
+				continue;
+			}
+
+			int soldiers = gameScreen.readAttackSoldiers();
+			if (from.getSoldiers() <= soldiers || soldiers <= to.getSoldiers()) {
+				gameScreen.setLogMessage("Invalid attack move.");
+				delay(1000);
+				continue;
+			}
+
+			from.setSoldiers(from.getSoldiers() - soldiers);
+			String playerColor = from.getOwnerType() ? "black" : "white";
+			gameScreen.setSoldiersInNode(String.valueOf(from.getId()), from.getContinent().getColor(), playerColor,
+					from.getSoldiers());
+
+			to.setSoldiers(soldiers - to.getSoldiers());
+			to.setOwnerType(curPlayer.getPlayer());
+			playerColor = from.getOwnerType() ? "black" : "white";
+			gameScreen.setSoldiersInNode(String.valueOf(to.getId()), to.getContinent().getColor(), playerColor,
+					to.getSoldiers());
+
+			break;
+		}
 	}
 
 	@Override
@@ -219,7 +242,6 @@ public class Controller extends JFrame implements IController {
 		Attack attackObject = curPlayer.attack(graph);
 		if (attackObject == null) {
 			curPlayer.setLastTurnAttack(false);
-			roleRunning = false;
 			return;
 		}
 		curPlayer.setLastTurnAttack(true);
@@ -237,7 +259,6 @@ public class Controller extends JFrame implements IController {
 		playerColor = attackObject.getTo().getOwnerType() ? "black" : "white";
 		gameScreen.setSoldiersInNode(String.valueOf(attackObject.getTo().getId()),
 				attackObject.getTo().getContinent().getColor(), playerColor, attackObject.getTo().getSoldiers());
-		roleRunning = false;
 	}
 
 	@Override
@@ -265,10 +286,25 @@ public class Controller extends JFrame implements IController {
 
 	@Override
 	public void humanDistributeBonus() {
-		// get bonus node
-		int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
-		gameScreen.setLogMessage("Select node to deploy" + String.valueOf(bonus) + " on.");
-		// add bonus on this node
+		while (true) {
+			int bonus = graph.calculateBonus(curPlayer.getPlayer(), curPlayer.lastTurnAttack());
+			gameScreen.setLogMessage("Select a node to deploy " + String.valueOf(bonus) + " soldiers.");
+
+			waitForDeploy = true;
+			while (waitForDeploy)
+				delay(100);
+
+			INode node = graph.getNodeById(Integer.parseInt(deployNodeId));
+			if (node.getOwnerType() != curPlayer.getPlayer())
+				continue;
+
+			node.setSoldiers(node.getSoldiers() + bonus);
+			String playerColor = node.getOwnerType() ? "black" : "white";
+			gameScreen.setSoldiersInNode(String.valueOf(node.getId()), node.getContinent().getColor(), playerColor,
+					node.getSoldiers());
+
+			break;
+		}
 	}
 
 	@Override
@@ -281,6 +317,20 @@ public class Controller extends JFrame implements IController {
 
 	public static void main(String[] args) {
 		new Controller();
+	}
+
+	@Override
+	public void nodePressed(String id) {
+		if (waitForDeploy) {
+			deployNodeId = id;
+			waitForDeploy = false;
+		} else if (waitForAttack == 0) {
+			attackFrom = id;
+			++waitForAttack;
+		} else if (waitForAttack == 1) {
+			attackTo = id;
+			++waitForAttack;
+		}
 	}
 
 }
