@@ -104,6 +104,9 @@ public class AStarAgent implements IAgent {
 
 		ArrayList<State> ret = new ArrayList<State>();
 		for (int deployNode : playerNodes) {
+			if (!canAttack(deployNode, cur, graph))
+				continue;
+
 			// Skip Attack
 			ArrayList<Integer> newSoldiers = cloneInt(cur.getSoldiers());
 			ArrayList<Boolean> newOwners = cloneBool(cur.getNodeOwner());
@@ -140,6 +143,14 @@ public class AStarAgent implements IAgent {
 			}
 		}
 		return ret;
+	}
+
+	private boolean canAttack(int nodeId, State cur, IGraph graph) {
+		INode node = graph.getNodeById(nodeId);
+		for (INode neighbour : node.getNeighbours())
+			if (cur.getNodeOwner().get(nodeId) != cur.getNodeOwner().get(neighbour.getId()))
+				return true;
+		return false;
 	}
 
 	private ArrayList<Boolean> cloneBool(ArrayList<Boolean> a) {

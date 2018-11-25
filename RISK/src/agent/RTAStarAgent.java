@@ -10,7 +10,7 @@ import graph.INode;
 import state.State;
 import state.StateContainer;
 
-public class RTAStarAgent implements IAgent{
+public class RTAStarAgent implements IAgent {
 
 	private final int DEPTH_LIMIT = 2;
 	private AgentType agentType;
@@ -26,14 +26,14 @@ public class RTAStarAgent implements IAgent{
 		this.agentType = agentType;
 		this.player = player;
 		this.lastTurnAttack = false;
-		
+
 		deployIndex = attackIndex = 0;
 		deploySequence = new ArrayList<INode>();
 		attackSequence = new ArrayList<Attack>();
-		
+
 		preprocess(graph);
 	}
-	
+
 	@Override
 	public AgentType getAgentType() {
 		return this.agentType;
@@ -58,34 +58,34 @@ public class RTAStarAgent implements IAgent{
 	public boolean lastTurnAttack() {
 		return lastTurnAttack;
 	}
-	
+
 	@Override
 	public void setLastTurnAttack(boolean lastTurnAttack) {
 		this.lastTurnAttack = lastTurnAttack;
 	}
-	
-	private State getBestNextState(State S, 
-							StateContainer visited, StateContainer visited1, IGraph graph) {
-		
-		if(S == null) return null;
+
+	private State getBestNextState(State S, StateContainer visited, StateContainer visited1, IGraph graph) {
+
+		if (S == null)
+			return null;
 
 		State bestState = S;
 		StateContainer frontier = new StateContainer();
 		frontier.add(S);
-		for(int depth = 1; depth < DEPTH_LIMIT; ++depth) {
+		for (int depth = 1; depth < DEPTH_LIMIT; ++depth) {
 			StateContainer nextFrontier = new StateContainer();
 			while (!frontier.isEmpty()) {
 				State cur = frontier.getMin();
-				
-				if(cur.getCost() > bestState.getCost())
+
+				if (cur.getCost() > bestState.getCost())
 					continue;
-				
+
 				bestState = cur;
-				if (cur.gameOver()) 
+				if (cur.gameOver())
 					continue;
-				
+
 				visited1.add(cur);
-	
+
 				ArrayList<State> neighbours = getNeighbours(cur, graph);
 				for (State s : neighbours)
 					if (!frontier.exists(s) && !nextFrontier.exists(s) && !visited.exists(s) && !visited1.exists(s)) {
@@ -98,37 +98,38 @@ public class RTAStarAgent implements IAgent{
 
 		return bestState;
 	}
-	
+
 	private boolean RTA(State cur, IGraph graph, StateContainer visited) {
-		if(cur == null || visited.exists(cur)) 
+		if (cur == null || visited.exists(cur))
 			return false;
-		if(cur.gameOver()) {
+		if (cur.gameOver()) {
 			buildPlayStrategy(cur, graph);
 			System.out.print("RTA* agent found a strategy in ");
 			System.out.print(deploySequence.size());
 			System.out.println(" steps.");
 			return true;
 		}
-		
+
 		visited.add(cur);
 		boolean canReach = false;
-		while(!canReach) {
+		while (!canReach) {
 			State nextState = null;
-			
+
 			ArrayList<State> neighbours = getNeighbours(cur, graph);
-			for(State neighbour: neighbours) {
-				if(!visited.exists(neighbour)) {
+			for (State neighbour : neighbours) {
+				if (!visited.exists(neighbour)) {
 					neighbour.setParent(cur);
 					State curState = getBestNextState(neighbour, visited, new StateContainer(), graph);
-					if(nextState == null || curState.getCost() < nextState.getCost())
+					if (nextState == null || curState.getCost() < nextState.getCost())
 						nextState = curState;
 				}
 			}
-			
+
 			canReach |= RTA(nextState, graph, visited);
-			if(nextState == null) break;
+			if (nextState == null)
+				break;
 		}
-		
+
 		return canReach;
 	}
 
@@ -137,10 +138,9 @@ public class RTAStarAgent implements IAgent{
 		State initialState = getInitialState(graph);
 		if (player)
 			makePassiveMove(initialState, graph);
-		
+
 		RTA(initialState, graph, visited);
 	}
-
 
 	// Makes 2 moves, one for greedy and one for passive
 	private ArrayList<State> getNeighbours(State cur, IGraph graph) {
@@ -157,6 +157,9 @@ public class RTAStarAgent implements IAgent{
 
 		ArrayList<State> ret = new ArrayList<State>();
 		for (int deployNode : playerNodes) {
+			if (!canAttack(deployNode, cur, graph))
+				continue;
+
 			// Skip Attack
 			ArrayList<Integer> newSoldiers = cloneInt(cur.getSoldiers());
 			ArrayList<Boolean> newOwners = cloneBool(cur.getNodeOwner());
@@ -193,6 +196,14 @@ public class RTAStarAgent implements IAgent{
 			}
 		}
 		return ret;
+	}
+
+	private boolean canAttack(int nodeId, State cur, IGraph graph) {
+		INode node = graph.getNodeById(nodeId);
+		for (INode neighbour : node.getNeighbours())
+			if (cur.getNodeOwner().get(nodeId) != cur.getNodeOwner().get(neighbour.getId()))
+				return true;
+		return false;
 	}
 
 	private ArrayList<Boolean> cloneBool(ArrayList<Boolean> a) {
@@ -273,4 +284,4 @@ public class RTAStarAgent implements IAgent{
 
 }
 
-//https://pastebin.com/gJwLES7t
+// https://pastebin.com/gJwLES7t
